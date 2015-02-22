@@ -1,0 +1,315 @@
+\documentclass[letterpaper, 10pt, conference]{ieeeconf/ieeeconf} % Change font size to 9pt
+
+\IEEEoverridecommandlockouts
+\overrideIEEEmargins
+
+\usepackage{graphics}
+\usepackage{epsfig}
+% \usepackage{mathptmx}
+% \usepackage{times}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cite}
+\usepackage{lpic}
+
+\newtheorem{thm}{Lemma}[section]
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{assn}{Assumption}
+\newtheorem{algo}[thm]{Algorithm}
+
+\providecommand{\norm}[1]{\left\|#1\right\|}
+\providecommand{\abs}[1]{\left|#1\right|}
+\providecommand{\conv}{\text{conv}}
+
+\usepackage{xcolor}
+\def\edit{\textcolor{blue}}
+\allowdisplaybreaks[4]
+
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+      <5> <6> <7> <8> <9> <10> gen * mathx
+      <10.95> mathx10 <12> <14.4> <17.28> <20.74> <24.88> mathx12
+      }{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathSymbol{\temp}{\mathbin}{mathx}{'341}
+\newcommand{\bigominus}{\raisebox{10pt}{$\temp$}}
+
+\graphicspath{{./Pix/}}
+
+\begin{document}
+  \title{Advances in Robust Positive Invariant Sets Computation}
+
+\author{Rainer M. Schaich\textsuperscript{\dag} %
+         and Mark Cannon\textsuperscript{\dag,\ddag}%
+\thanks{\textsuperscript{\dag} Department of Engineering Science, University of Oxford, OX1 3PJ.}%
+\thanks{\textsuperscript{\ddag} Corresponding author, 
+        \texttt{mark.cannon@eng.ox.ac.uk}.}
+}
+
+
+\maketitle
+
+\begin{abstract} 
+
+\end{abstract}
+
+\begin{keywords}
+\vskip-\baselineskip
+\end{keywords}
+
+\section{Introduction}
+\begin{equation}\label{eq:system:equation}
+	x^+ = \Psi x + v
+\end{equation}
+\begin{equation}\label{eq:definition:mrpi:set:state:dependent}
+	\mathcal X^\infty = \{x:\Psi x + v\in\mathcal X^\infty\; \forall v\in\mathcal V(x)\}
+\end{equation}
+\begin{equation}\label{eq:PWA:distrubance:set}
+	\mathcal V(x) = \left\{v: Gv\leq\max\{{\bf{1}},H^x x\}\right\}
+\end{equation}
+\section{Parametrically convex set operations}
+In this section we discuss sets that depend on a state-like parameter (so called point-to-set maps, 
+see~\cite{Hogan:1973}), and extend the existing set algebra~\cite{blanchini:2007} to 
+accommodate such sets. We present the general case first, then derive the computation of
+the case with piece-wise affine sets.
+
+
+%First we introduce
+    \begin{defn}[Parametric Convexity]\label{def:parametric:convexity}
+      Let $X\subseteq\mathbb R^n$ and $Y\subseteq\mathbb R^m$ and $T:X\rightarrow Y$, $X\ni s\mapsto T(s)\subset Y$ be a 
+      continuous point-to-set map. The map $T$ is called \emph{parametrically convex} if it satisfies
+      \begin{equation}\label{eq:pconvexdef}
+        T(\lambda s_1 + (1-\lambda)s_2)\subseteq\lambda T(s_1) \oplus (1-\lambda) T(s_2)
+      \end{equation}
+      for all $s_1,s_2\in X$ and $\lambda\in[0,1]$.
+    \end{defn}
+
+In (\ref{eq:pconvexdef}), $\oplus$ denotes the Minkowski set addition
+      \begin{equation}
+        \mathcal A\oplus\mathcal B = \{c : c = a + b\; \forall\,a\in\mathcal A,\, b\in\mathcal B\}.
+      \end{equation}
+%      see~\cite{blanchini:2007}.
+%    Note also that Definition~\ref{def:parametric:convexity} does not require $X$ and $Y$ to be of equal dimensions.
+    In the following we will need to be able to compute differences of sets
+    analogous to the Pontryagin difference in~\cite{Kolmanovsky:1998} but using parametrised 
+    sets, this is defined as follows:
+
+    \begin{defn}[Parametric Pontryagin Difference]\label{def:parametric:pontryagin:difference}
+Let $S\subseteq X$ and let $T:X\to X$ be a continuous point-to-set map,
+%      Let $T$ be a continuous point-to-set map from $X$ to $X$, and let $S\subseteq X$, 
+then the \emph{parametric Pontryagin difference} $S\ominus T(S)$ is 
+      \begin{equation}
+        S\ominus T(S) = \left\{x\in X: \{x\} \oplus T(x)\subseteq S\right\},
+      \end{equation}
+      where $T(S)$ denotes the image of $S$ under the map $T$.
+    \end{defn}
+
+    For parametric Pontryagin differences of convex sets and parametrically convex maps we have the following result.
+
+    \begin{thm}\label{thm:convexity:of:pontryagin:difference}
+      Let $S\subseteq X$ be a convex set and let $T:X\rightarrow X$ be a parametrically convex point-to-set
+      map, then $S\ominus T(S)$ is convex. 
+    \end{thm}
+    \begin{proof}
+      Define $ Z =  S\ominus T( S)$ and let $z_1,z_2\in Z$, then
+      by definition of the parametric Pontryagin difference, we have
+      \begin{equation}
+        \{z_i\} \oplus T(z_i) \subseteq S,\; i=1,2.
+      \end{equation}
+      To see that $ Z$ is convex we show that line segments between
+      all possible $z_1$ and $z_2$ are subsets of $ Z$, i.e.~for all $\lambda \in [0,1]$,
+%      \begin{equation}\label{eq:proof:of:parametric:convexity}
+      \[\begin{aligned}
+        \{ \lambda z_1 + (1-&\lambda)z_2
+        \}\oplus T\left( \lambda z_1 + (1-\lambda)z_2\right)\\
+        \subseteq&\left\{ \lambda z_1 + (1-\lambda)z_2
+        \right\}\oplus \lambda T(z_1) \oplus (1-\lambda)
+         T(z_2)\\
+        \subseteq &\lambda\underbrace{(\{z_1\}\oplus T(z_1))}_{\subseteq S}\oplus
+        (1-\lambda)\underbrace{(\{z_2\}\oplus T(z_2))}_{\subseteq S}\\
+        \subseteq& Z
+        \end{aligned}\]
+%      \end{equation}
+      where the last inclusion follows from the convexity of $\mathcal S$.
+    \end{proof}
+
+    In the given setup we consider a point-to-set map defined by
+    \begin{equation}\label{eq:definition:disturbance:set}
+      \mathcal V(x) = \{v:\,G v \leq H(x)\}
+    \end{equation}
+    where $H$ is elementwise convex in $x$, so that 
+    $H_i(\lambda x_1+(1-\lambda)x_2)\leq \lambda H_i(x_1)+(1-\lambda)H_i(x_2)$ for 
+    $\lambda\in[0,1]$.  For such sets we have the following result.
+    \begin{thm}\label{thm:convex:parametric:set}
+      $\mathcal V (x)$ defined in~\eqref{eq:definition:disturbance:set} is parametrically convex.
+    \end{thm}
+    \begin{proof}
+      To show that $\mathcal V(\lambda x_1 + (1-\lambda)x_2)\subseteq 
+      \lambda\mathcal V(x_1) \oplus(1-\lambda)\mathcal V(x_2)$ for all $\lambda \in [0,1]$ we note that
+        \begin{align*}
+        \mathcal V&(\lambda x_1 + (1-\lambda)x_2)\\
+        =& \{v:\; G v \leq H(\lambda x_1 + (1-\lambda)x_2)\}\\
+        \subseteq& \{v:\;Gv\leq\lambda H(x_1)+(1-\lambda) H(x_2)\}\\
+        =&\{v:\;Gv\leq\lambda H(x_1)\}\oplus\{v
+        :\;Gv\leq(1-\lambda)H(x_2)\}\\
+        =&\lambda\mathcal V(x_1)\oplus(1-\lambda)\mathcal V(x_2).
+        \end{align*}
+\vskip-1.5\baselineskip
+    \end{proof} 
+\def\genmat{\Xi} \def\genvec{\xi}Lemmas~\ref{thm:convexity:of:pontryagin:difference} 
+and~\ref{thm:convex:parametric:set} imply that the difference of a convex set and 
+$\mathcal V(x)$ is a convex set.
+Furthermore, we will see that if $\mathcal X$ is polyhedral and $\mathcal 
+V(x)$ is as defined in~\eqref{eq:PWA:distrubance:set}, then $\mathcal X\ominus\mathcal V(\mathcal X)$ is 
+again a polytopic set. This will become more clear in the next section when we describe 
+the computation of the mRPI set~\eqref{eq:definition:mrpi:set:state:dependent}.
+
+\section{Maximal Robust Positive Invariant Sets for State Dependent Disturbance}
+In this section we describe an iterative algorithm to compute the mRPI 
+set~\eqref{eq:definition:mrpi:set:state:dependent} for a linear system~\eqref{eq:system:equation}.
+For this notice that the set $\mathcal V(x)$ can be represented as the convex hull of its vertices 
+$\mathcal V(x) = \conv\{v_i(x)\}$. Since ${\mathcal{V}}(x)$
+has a piece-wise affine dependence on $x$ the vertices $v_i(x)$ are also piece-wise affine in $x$.
+The set $\mathcal X^\infty$ as defined in~\eqref{eq:definition:mrpi:set:state:dependent} 
+requires to satisfy $\Psi x + v\in\mathcal X^\infty$ for all
+$x\in\mathcal X^\infty$ and $v\in\mathcal V(x)$, to compute the mRPI set we start from a given set
+$\mathcal X_0 = \{x:\;\genmat_{0,i}x\leq \genvec_{0,i}\,\forall i\in\mathcal I_0\}$, e.g.
+the system constraints, and 
+\emph{cut off} all points that do not satisfy the invariance condition in one step, two steps, 
+etc. until only points satisfying the conditions are left. I.e. we iteratively introduce 
+constraints that cut off all points for which the successor state can lie outside 
+$\mathcal X_0$. So for the first iteration we need to enforce the constraint:
+\begin{equation}\begin{split}
+	&\genmat_{0,i}(\Psi x + v)\overset{!}{\leq}\genvec_{0,i}\;\forall v\in\conv\{v_i(x)\}\\
+	&\genmat_{0,i}\Psi x + \max_{v\in\mathcal V(x)} \genmat_{0,i} v \leq \genvec_{0,i}\\
+	&\genmat_{0,i}\Psi x + \underbrace{\max_{j} \genmat_{0,i} v_j(x)}_{v_{0,i}^\ast(x)} \leq \genvec_{0,i}.
+\end{split}\end{equation}
+to each inequality.
+Notice that $v_{0,i}^\ast(x)$ is not necessarily given by one unique maximiser, 
+but is the solution of a multiparametric linear program and hence will be given 
+by a vertex $v_i(x)$ of $\mathcal V(x)$ for each $x$ on that facet.
+Since each vertex is a piece-wise affine function of $x$ the maximum $v_{0,i}^\ast(x)$ will also
+be piece-wise affine
+and therefore the set $\mathcal X_1=\mathcal X_0 \cap \{x:\genmat_{0,i}\Psi x + v_{0,i}^\ast(x) \leq 
+\genvec_{0,i}\forall i\in\mathcal I_0\}$
+has the representation $\mathcal X_1 = \{x:\genmat_{1,i}x\leq\genvec_{1,i}\,\forall i\in\mathcal I_1\}$.
+The next iterate is defined by
+\begin{multline}
+	\mathcal X_2 = \mathcal X_1 \cap \\ \{x:\genmat_{0,i}\Psi(\Psi x + v) + v_{0,i}^\ast(x)\leq\genvec_{0,i}\,
+	\forall i\in\mathcal I_0,v\in\mathcal V(x)\}\\
+	= \mathcal X_1 \cap \{x: \genmat_{0,i}\Psi^2 x + v_{1,i}^\ast(x) + v_{0,i}^\ast(x)\leq\genvec_{0,i}\,\forall 
+	i\in\mathcal I_0\}.
+\end{multline}
+And we analogously define
+\begin{equation}
+	\mathcal X_{k+1} = \mathcal X_k\cap \{x:\genmat_{0,i}\Psi^k x + \sum_{l=0}^{k-1}v_{l,i}^\ast(x)
+	\leq\genvec_{0,i}\,\forall i\in\mathcal I_0\},
+\end{equation}
+where we have 
+\begin{multline}
+	v_{l,i}^\ast(x)=\begin{split}\max& \genmat_{0,i}\Psi^{l-1}v_j(x)\\ j&\end{split}
+	 = \begin{split}&\max \genmat_{0,i}\Psi^{l-1}v \\ &v\in\mathcal V(x)\end{split}\\
+	= \begin{split}&\max \genmat_{0,i}\tilde v\\ &\tilde v\in \Psi^{l-1}\mathcal V(x) \end{split}
+\end{multline}
+In a closed form the iterates can be expressed as
+\begin{equation}\label{eq:set:iteration:state:dependent:constraints}
+\begin{split}
+	\mathcal X_{k+1} =& \mathcal X_k\cap\left(\Psi^{-1}\mathcal X_k \ominus \Psi^{k-1}\mathcal V(\mathcal X_k)\right)
+	=\mathcal X_k\cap D_k \\
+	=& \bigcap_{l\leq k+1}\left( \Psi^{-l} \mathcal X_0 \underset{i\leq l-1}{\bigominus} \Psi^i \mathcal V(\mathcal X_{l-1})\right).
+\end{split}\end{equation}
+We will use~\eqref{eq:set:iteration:state:dependent:constraints} to prove the finite determinability of
+$\mathcal X^\infty$, i.e. that there exists a finite number $N$ such that $x\in\mathcal X_N$ implies
+$\Psi x + v \in\mathcal X_N$ for all $v\in\mathcal V(x)$ and the set therefore is robustly positive invariant.
+\begin{thm}
+Let the system constraints be contained in a band $\mathcal X_0\subseteq B=\{x:\Gamma x\leq{\bf{1}}\wedge 
+-\Gamma x\leq{\bf{1}}\}$, let the pair $(\Psi,\Gamma)$ be observable and let $\mathcal V(\mathcal X_0)$ be bounded, 
+then $\mathcal X_N\subseteq \mathcal X_{N+1}$ for a finite $N$. Hence the mRPI set $\mathcal X^\infty 
+=\mathcal X_N$ is a finite polytope.
+\end{thm}
+\begin{proof}
+The proof has two main steps: First we will prove that $\mathcal X_p$ is compact for $p\leq n$
+where $n$ is the state dimension. The second step is to prove that in~\eqref{eq:set:iteration:state:dependent:constraints}
+the set $D_k$ grows exponentially, i.e. that for any given compact set $\mathcal C$ there exists
+a $\tilde N$ such that $\mathcal C\subseteq D_{\tilde N}$. The proof is concluded by setting 
+$\mathcal C = \mathcal X_p$ and using $N = \tilde N$. For the first step, notice that the observability of
+$(\Psi,\Gamma)$ is equivalent to the observability matrix $\Omega$ having full rank, i.e.
+\[
+\Omega = \left(\begin{array}{c}
+\Gamma\\ \vdots \\ \Gamma\Psi^{n-1}
+\end{array}\right)
+\]
+having a trivial kernel. But this then implies that the set $\mathcal P_{n+1} = \{x: 
+\Omega x\leq{\bf{1}}\wedge-\Omega x\leq{\bf{1}}\} = \bigcap_{l\leq n+1} \Psi^{-l} B$ is bounded.
+Notice that the containment $\mathcal X_k\subseteq \mathcal P_k$ holds for all $k$ and hence
+the set $\mathcal X_{n+1}$ is also bounded. The case that $\tilde N<n$ occurs when $\Gamma$
+has more than rank one. To see that $D_k$ grows exponentially we use that $\mathcal V(\mathcal X_0)$
+is bounded, let $K_1$ denote the smallest ball that contains $\mathcal V(\mathcal X_0)$ and let
+$\bar\lambda$ denote the magnitude of the largest eigenvalue of $\Psi$. Furthermore, let $K_1$
+be the biggest ball that is contained in $\mathcal X_{0}$. $D_k$ has the representation
+\begin{equation}
+D_k = \underbrace{\Psi^{-k}\mathcal X_0}_{(\ast)} \ominus \underbrace{\left(\bigoplus_{i\leq k-1} 
+\Psi^i\mathcal V(\mathcal X_k)\right)}_{(\ast\ast)}.
+\end{equation}
+Since $\Psi$ is asymptotically stable we know that $\bar\lambda<1$ and so we have 
+$\bar\lambda^{-l}K_1\subseteq\Psi^{-l} K_1 \subseteq \Psi^{-l}\mathcal X_0 = (\ast)$
+which implies exponential growth of $D_k$ as long as $(\ast\ast)$ is bounded.
+To bound $(\ast\ast)$ we use $(\ast\ast)\subseteq \oplus_{i\leq k-1} \bar\lambda^i K_2 \subseteq
+\frac{1}{1-\bar\lambda} K_2$. This concludes the proof: We proved that $D_k$ grows exponentially,
+that it contains an exponentially growing ball. We proved that the subtrahend is bounded inside a ball of
+finite radius, and hence we conclude that after a finite number of iterations $N$ intersecting with $D_{N+1}$
+will no longer change $\mathcal X_N$.
+\end{proof}
+We have seen that we can compute a the maximal robust positive invariant set $\mathcal X^\infty$ for linear 
+systems with state dependent constraints. In the next section we will illustrate the concept with an 
+example.
+\section{Example}
+In this section we discuss the calculation of the mRPI set for a simplified model of the levitating
+ball system depict in figure~\ref{fig:levitating:ball}. The system dynamics for the ball are given
+by $m \ddot y = m g - c\frac{i^2}{y^2}$, where $m,g,c,i$ and $y$ denote the mass of the ball, the gravitational
+constant, a constant factor, the current and the distance between the coil and the centre of the ball respectively.
+For illustration purposes we neglect inductive dynamics and use the current $u=i$ as an input and the position
+$y$ and its first derivative $\dot y$ as the states, i.e. $x = (y,\dot y)^T$. We find that an equilibrium
+is present when $x_2=0$ and $u=\sqrt{\frac{gm}{c}}x_1$ for any positive position $x_1>0$.
+Linearising the nonlinear differential equation $\dot x = f(x,u)$ around $\hat x, \hat u$ we obtain
+\begin{equation}
+	\Delta \dot x = \underbrace{\left(\begin{array}{cc}
+	0 & 1 \\ \frac{2c\hat u^2}{m\hat x_1^3} & 0
+	\end{array}\right)}_{\frac{\partial f}{\partial x}(\hat x,\hat u)}\Delta x + \underbrace{\left(\begin{array}{c}
+	0 \\ - \frac{2c\hat u}{m\hat x_1^2}
+	\end{array}\right)}_{\frac{\partial f}{\partial u}(\hat x,\hat u)}\Delta u.
+\end{equation}
+We derive discrete time system dynamics using the explicit Euler formula $x^+=x+T_s f(x,u) =:\tilde f(x,u)$,
+with the sampling rate $T_s$. We hence define the system matrix $A = (I+T_s\frac{\partial f}{\partial x}(\hat x,\hat u))$
+and the input matrix $B = T_s \frac{\partial f}{\partial u}(\hat x,\hat u)$. In order to obtain a 
+representation of additive disturbances depending on the state and input like~\eqref{eq:definition:disturbance:set}
+we use the mean-value theorem for vector valued functions:
+\begin{thm}
+Let $\mathcal X\subset\mathbb R^n$ be open, $f : \mathcal X \rightarrow\mathbb R^m$ continuously differentiable, 
+and $x \in\mathcal X, h \in\mathbb R^n$ vectors such that the 
+whole line segment $x + th$ remains in $\mathcal X$ for $0 \leq t \leq 1$. Then
+\begin{equation}
+	f(x+th) = f(x) + \left(\int_0^1 \frac{\partial f}{\partial x}(x+th)dt\right)\cdot h.
+\end{equation}
+\end{thm}
+\begin{figure}
+\centering
+\begin{lpic}{levitatingBall}
+\lbl[tr]{25,3; $m g$}
+\lbl[br]{25,25; $c\frac{i^2}{x^2}$}
+\lbl[bl]{49,17; $y$}
+\lbl[bl]{56,55; $i$}
+\end{lpic}
+\caption{Levitating ball system.}
+\label{fig:levitating:ball}
+\end{figure}
+\section{Maximal Robust Positive Invariant Sets for Parametrised Disturbance}
+\section{Example}
+
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,MyLib}
+
+\end{document}
