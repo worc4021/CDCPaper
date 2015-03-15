@@ -13,6 +13,7 @@
 \usepackage{lpic}
 % \usepackage{blkarray}
 \usepackage{mathrsfs}
+\usepackage{todonotes}
 
 \newtheorem{thm}{Lemma}[section]
 \newtheorem{rem}[thm]{Remark}
@@ -50,7 +51,7 @@
 \thanks{\textsuperscript{\ddag} Corresponding author, 
         \texttt{mark.cannon@eng.ox.ac.uk}.}
 }
-
+\newcommand{\note}[1]{\todo[inline]{#1}}
 
 \maketitle
 
@@ -69,54 +70,65 @@ treatment of both and illustrate their benefits in two numerical examples.
 \section{Introduction}
 Ever since the introduction of disturbance invariant sets in~\cite{Glover:1971}, the analytic
 properties of these sets have been fairly well studied, see~\cite{blanchini:2007}. Here by disturbance
-invariant sets we mean set $\mathscr X$ containing initial conditions for the perturbed linear system
+invariant sets we mean a subset of the state constraint set $\mathscr X\subseteq\mathcal X_0\subseteq\mathbb R^n$ 
+containing initial conditions for the perturbed linear system
 \begin{equation}\label{eq:system:equation}
 	x^+ = \Psi x + v,
 \end{equation}
-where $\Psi$ is Hurwitz, $x,x^+\in\mathbb R^n$ the state and the successor state, and where 
+where $\Psi$ is Hurwitz, $x,x^+\in\mathcal X_0$ the state and the successor state, and where 
 $v\in\mathscr V$ denotes the perturbation, such that the successor state is contained in the 
-disturbance invariant $x^+\in\mathscr X$ set for all possible realisations of the 
+disturbance invariant set $x^+\in\mathscr X$ for all possible realisations of the 
 perturbation $v\in\mathscr V$. That is summarised in the implicit definition
-\begin{equation}\label{eq:definition:mrpi:set:state:dependent}
+\begin{equation}\label{eq:definition:MRPI:set:state:dependent}
 	\mathscr X = \{x:\Psi x + v\in\mathscr X\; \forall v\in\mathscr V\}.
 \end{equation}
-These sets are known as robust positive invariant (RPI) sets, for obvious reasons we are interested 
-the largest such set, i.e. the set containing all other RPI sets $\mathscr X\subseteq\mathcal X^\infty$,
-this set is called the maximal robust positive invariant (mRPI) set. Even though analytical properties
+These sets are known as robust positive invariant (RPI) sets. In many applications we are interested in the largest such
+set $\mathcal X^\infty$, i.e. the set containing all other RPI sets $\mathscr X\subseteq\mathcal X^\infty$,
+this set is called the maximal robust positive invariant (MRPI) set. These sets are used e.g. as terminal regions in 
+robust model predictive control. Even though analytical properties
 of these sets were derived early after their introduction, it took more than two decades until algorithms
-were introduced to numerically compute mRPI sets~\cite{DeSantis:1994,Kolmanovsky:1995,Blanchini:1994}. Earlier algorithms
+were introduced to numerically compute MRPI sets~\cite{DeSantis:1994,Kolmanovsky:1995,Blanchini:1994}. 
+\note{You commented 'check', I didn't know what that meant.}
+Earlier algorithms
 did not guarantee finite determinability of $\mathcal X^\infty$, see e.g.~\cite{Blanchini:1990}, or 
 did not guarantee to produce the maximal RPI set, e.g.~\cite{Blanchini:1991}. 
 %
 In the afore mentioned algorithms the perturbation was considered to belong to a fixed compact set, in this paper
-we consider sets that vary with parameters. First we consider the set of disturbances to be state dependent, i.e.
+we consider sets that vary with parameters. First we consider the set of disturbances to be state dependent, e.g.
 \begin{equation}\label{eq:PWA:distrubance:set}
-	\mathcal V(x) = \left\{v: Gv\leq\max\{{\bf{1}},H^x x\}\right\},
+	\mathcal V(x) = \left\{v: Gv\leq H(x)\right\},
 \end{equation}
-where the maximum is understood to be element-wise. This means that in the first part of the paper
-we will discuss the computation of $\mathcal X^\infty$ for the case where $\mathscr V=\mathcal V(x)$.
+where $H(x)$ is a piecewise affine function. This means that in the first part of the paper
+we discuss the computation of $\mathcal X^\infty$ for the case where $\mathscr V=\mathcal V(x)$.
 The case where the disturbance depends on the state has been studied analytically before but not 
-extensively, see~\cite{Kuntsevich:1995}.
+extensively, see~\cite{Kuntsevich:1995}. These kind of disturbance constraints can be used to
+account for linearisation errors, as will be shown in section~\ref{sec:first:example}, but can also
+be used to treat multiplicative uncertainty.
 
 The second case we consider is the case of a scaled set of disturbance, i.e.
 \begin{equation}
   \mathcal V(\theta) = \{v:Gv\leq(1+\theta){\bf{1}}\},
 \end{equation}
-with $\theta>-1$. To distinguish the resulting sets from regular mRPI sets we use $\mathcal Z^\infty$
-to emphasise that $\mathcal Z^\infty$ itself is not an mRPI set, however by fixing $\theta=\hat\theta$ the
-set $\mathcal Z^\infty\vert_{\hat\theta}$ is an mRPI set. To our best knowledge, this setup has not been 
-presented in the literature.
+with $\theta>-1$. To distinguish the resulting sets from regular MRPI sets we use $\mathcal Z^\infty$
+to emphasise that $\mathcal Z^\infty$ itself is not an MRPI set, however by fixing $\theta=\hat\theta$ the
+set $\mathcal Z^\infty\vert_{\hat\theta}$ is an MRPI set. To our best knowledge, this setup has not been 
+presented in the literature. This type of disturbance constraints can be used to study the sensitivity of
+the MRPI set to changes in the disturbance \emph{strength}.
 
 The remainder of this paper is structured: In section~\ref{sec:parametrically:convex:set:operations} we
-introduce the notion of \emph{parametric convexity} and of its general implications, this is necessary 
-for the convexity of the mRPI set. The algorithm to compute the mRPI set for state dependent disturbance
-constraints is presented in section~\ref{sec:state:dep:mrpi}, we also prove its finite determinability.
+introduce the notion of \emph{parametric convexity} and of its general implications, this is sufficient 
+for the convexity of the MRPI set. The algorithm to compute the MRPI set for state dependent disturbance
+constraints is presented in section~\ref{sec:state:dep:MRPI}, we also prove its finite determinability.
 In section~\ref{sec:first:example} we demonstrate the algorithm using a numerical exemplary system, a
-levitating ball setup. The case of scaled disturbance constraints is discussed in section~\ref{sec:mRPI:parametrised}
-where the algorithm for the parametrised mRPI set as well as the proof for its finite determinability
-are also presented. Section~\ref{sec:second:example} illustrates the use of parametrised mRPI sets using
+levitating ball setup. The case of scaled disturbance constraints is discussed in section~\ref{sec:MRPI:parametrised}
+where the algorithm for the parametrised MRPI set as well as the proof for its finite determinability
+are also presented. Section~\ref{sec:second:example} illustrates the use of parametrised MRPI sets using
 again the levitating ball example and illustrating some of possible robustness analyses of the parametrised
-mRPI sets with a numerical example. The paper is concluded in section~\ref{sec:conclusions}.
+MRPI sets with a numerical example. The paper is concluded in section~\ref{sec:conclusions}.
+
+In the remainder of this paper we use the notion of a polyhedra for sets that can be represented as
+the intersection of a finite number of halfspaces, polytopic sets for bounded polyhedral.
+By ${\bf{1}}$ we denote the column vector of ones in appropriate dimension, $\wedge$ denotes the logical and. 
 %
 %
 %
@@ -128,7 +140,8 @@ the case with piece-wise affine sets.
 %
 %
     \begin{defn}[Parametric Convexity]\label{def:parametric:convexity}
-      Let $X\subseteq\mathbb R^n$ and $Y\subseteq\mathbb R^m$ and $T:X\rightarrow Y$, $X\ni s\mapsto T(s)\subset Y$ be a 
+      Let $X\subseteq\mathbb R^n, Y\subseteq\mathbb R^m$, let $\mathcal P(Y)$ denote the power set of $Y$ 
+      and $T:X\rightarrow \mathcal P(Y)$, $X\ni s\mapsto T(s)\subset Y$ be a 
       continuous point-to-set map. The map $T$ is called \emph{parametrically convex} if it satisfies
       \begin{equation}\label{eq:pconvexdef}
         T(\lambda s_1 + (1-\lambda)s_2)\subseteq\lambda T(s_1) \oplus (1-\lambda) T(s_2)
@@ -146,18 +159,21 @@ In (\ref{eq:pconvexdef}), $\oplus$ denotes the Minkowski set addition
     sets, this is defined as follows:
 %
     \begin{defn}[Parametric Pontryagin Difference]\label{def:parametric:pontryagin:difference}
-Let $S\subseteq X$ and let $T:X\to X$ be a continuous point-to-set map,
+Let $S\subseteq X$ and let $T:X\to\mathcal P(X)$ be a continuous point-to-set map,
 then the \emph{parametric Pontryagin difference} $S\ominus T(S)$ is 
-      \begin{equation}
+      \begin{equation}\label{eq:definition:parametric:pontryagin:difference}
         S\ominus T(S) = \left\{x\in X: \{x\} \oplus T(x)\subseteq S\right\},
       \end{equation}
-      where $T(S)$ denotes the image of $S$ under the map $T$.
+      where $T(S)$ denotes the image of $S$ under the map $T$. 
     \end{defn}
 %
+    Notice that for constant maps $T$
+    definition~\eqref{eq:definition:parametric:pontryagin:difference} is equivalent to the 
+    well known Pontryagin difference.
     For parametric Pontryagin differences of convex sets and parametrically convex maps we have the following result.
 %
     \begin{thm}\label{thm:convexity:of:pontryagin:difference}
-      Let $S\subseteq X$ be a convex set and let $T:X\rightarrow X$ be a parametrically convex point-to-set
+      Let $S\subseteq X$ be a convex set and let $T:X\rightarrow\mathcal P(X)$ be a parametrically convex point-to-set
       map, then $S\ominus T(S)$ is convex. 
     \end{thm}
 %
@@ -183,15 +199,13 @@ then the \emph{parametric Pontryagin difference} $S\ominus T(S)$ is
     \end{proof}
 %
 %
-    In the given setup we consider a point-to-set map defined by
-    \begin{equation}\label{eq:definition:disturbance:set}
-      \mathcal V(x) = \{v:\,G v \leq H(x)\}
-    \end{equation}
-    where $H$ is elementwise convex in $x$, so that 
+  Consider a point-to-set map defined by~\eqref{eq:PWA:distrubance:set}
+    where, for now, $H$ is elementwise convex in $x\in \mathscr X\subseteq\mathbb R^n$, so that 
     $H_i(\lambda x_1+(1-\lambda)x_2)\leq \lambda H_i(x_1)+(1-\lambda)H_i(x_2)$ for 
-    $\lambda\in[0,1]$.  For such sets we have the following result.
+    $\lambda\in[0,1]$ and $x_1, x_2\in X$.  For such sets we have the following result:
     \begin{thm}\label{thm:convex:parametric:set}
-      $\mathcal V (x)$ defined in~\eqref{eq:definition:disturbance:set} is parametrically convex.
+      The point-to-set map $\mathcal V (x)$ defined in~\eqref{eq:PWA:distrubance:set} is parametrically 
+      convex for all $x\in X.$
     \end{thm}
 %
     \begin{proof}
@@ -210,30 +224,32 @@ then the \emph{parametric Pontryagin difference} $S\ominus T(S)$ is
 %
 %
 \def\genmat{\Xi} \def\genvec{\xi}Lemmas~\ref{thm:convexity:of:pontryagin:difference} 
-and~\ref{thm:convex:parametric:set} imply that the difference of a convex set and 
-$\mathcal V(x)$ is a convex set.
+and~\ref{thm:convex:parametric:set} imply that the parametric Pontryagin difference between a convex set $\mathcal X$ and 
+the point-to-set map $\mathcal V(x)$, i.e. $\mathcal X\ominus \mathcal V(\mathcal X)$, is a convex set.
 Furthermore, we will see that if $\mathcal X$ is polyhedral and $\mathcal 
-V(x)$ is as defined in~\eqref{eq:PWA:distrubance:set}, then $\mathcal X\ominus\mathcal V(\mathcal X)$ is 
+V(x)$ is point wise polytopic, then $\mathcal X\ominus\mathcal V(\mathcal X)$ is 
 again a polytopic set. This will become more clear in the next section when we describe 
-the computation of the mRPI set~\eqref{eq:definition:mrpi:set:state:dependent}.
+the computation of the MRPI set~\eqref{eq:definition:MRPI:set:state:dependent}.
 %
 %
 %
 %
-\section{Maximal Robust Positive Invariant Sets for State Dependent Disturbance}\label{sec:state:dep:mrpi}
-In this section we describe an iterative algorithm to compute the mRPI 
-set~\eqref{eq:definition:mrpi:set:state:dependent} for a linear system~\eqref{eq:system:equation}.
-For this notice that the set $\mathcal V(x)$ can be represented as the convex hull of its vertices 
-$\mathcal V(x) = \conv\{v_i(x)\}$. Since ${\mathcal{V}}(x)$
+\section{Maximal Robust Positive Invariant Sets for State Dependent Disturbance}\label{sec:state:dep:MRPI}
+In this section we describe an iterative algorithm to compute the MRPI 
+set~\eqref{eq:definition:MRPI:set:state:dependent} for a linear system~\eqref{eq:system:equation} subject to disturbance
+$v\in\mathcal V(x)$ where $\mathcal V(x)$ is defined as in~\eqref{eq:PWA:distrubance:set} with a piecewise affine $H(x)$.
+Notice that the set $\mathcal V(x)$ is pointwise polytopic for finite $x\in\mathcal X_0$ and can hence be represented as the 
+convex hull of its vertices $\mathcal V(x) = \conv\{v_i(x)\}$. Since ${\mathcal{V}}(x)$
 has a piece-wise affine dependence on $x$ the vertices $v_i(x)$ are also piece-wise affine in $x$.
-The set $\mathcal X^\infty$ as defined in~\eqref{eq:definition:mrpi:set:state:dependent} 
+The set $\mathcal X^\infty$ as defined in~\eqref{eq:definition:MRPI:set:state:dependent} 
 requires to satisfy $\Psi x + v\in\mathcal X^\infty$ for all
-$x\in\mathcal X^\infty$ and $v\in\mathcal V(x)$, to compute the mRPI set we start from a given set
-$\mathcal X_0 = \{x:\;\genmat_{0,i}x\leq \genvec_{0,i}\,\forall i\in\mathcal I_0\}$, e.g.
-the system constraints, and 
-\emph{cut off} all points that do not satisfy the invariance condition in one step, two steps, 
-etc. until only points satisfying the conditions are left. I.e. we iteratively introduce 
-constraints that cut off all points for which the successor state can lie outside 
+$x\in\mathcal X^\infty$ and $v\in\mathcal V(x)$. To compute the MRPI set we start from the given 
+state constraint set
+$\mathcal X_0 = \{x:\;\genmat_{0,i}x\leq \genvec_{0,i}\,\forall i\in\mathcal I_0\}$ and 
+\emph{cut off} all points that do not satisfy the invariance condition in $k$ steps, $k\in\mathbb N$. 
+So that all points remaining satisfy the invariance condition~\eqref{eq:definition:MRPI:set:state:dependent}. 
+I.e. we iteratively introduce 
+constraints that separate all points for which the successor state can lie outside 
 $\mathcal X_0$. So for the first iteration we need to enforce the constraint:
 %
 \begin{equation}\begin{split}
@@ -270,9 +286,9 @@ And we analogously define
 where we have 
 %
 \begin{multline}
-	v_{l,i}^\ast(x)=\begin{split}\max& \genmat_{0,i}\Psi^{l-1}v_j(x)\\ j&\end{split}
-	 = \begin{split}&\max \genmat_{0,i}\Psi^{l-1}v \\ &v\in\mathcal V(x)\end{split}\\
-	= \begin{split}&\max \genmat_{0,i}\tilde v\\ &\tilde v\in \Psi^{l-1}\mathcal V(x) \end{split}
+	v_{l,i}^\ast(x)=\max_j \genmat_{0,i}\Psi^{l-1}v_j(x)\\
+	 = \begin{array}{rl} \max& \genmat_{0,i}\Psi^{l-1}v \\ \text{s.t.}& v\in\mathcal V(x)\end{array}
+	 = \begin{array}{rl} \max& \genmat_{0,i}\tilde v\\ \text{s.t.}& \tilde v\in \Psi^{l-1}\mathcal V(x) \end{array}
 \end{multline}
 %
 In a closed form the iterates can be expressed as
@@ -288,14 +304,21 @@ We will use~\eqref{eq:set:iteration:state:dependent:constraints} to prove the fi
 $\mathcal X^\infty$, i.e. that there exists a finite number $N$ such that $x\in\mathcal X_N$ implies
 $\Psi x + v \in\mathcal X_N$ for all $v\in\mathcal V(x)$ and the set therefore is robustly positive invariant.
 %
-\begin{thm}\label{thm:finite:mRPI:set:state:dependable}
+\begin{thm}\label{thm:finite:MRPI:set:state:dependable}
 Let the system constraints be contained in a band $\mathcal X_0\subseteq B=\{x:\Gamma x\leq{\bf{1}}\wedge 
--\Gamma x\leq{\bf{1}}\}$, let the pair $(\Psi,\Gamma)$ be observable and let $\mathcal V(\mathcal X_0)$ be bounded, 
-then $\mathcal X_N\subseteq \mathcal X_{N+1}$ for a finite $N$. Hence the mRPI set $\mathcal X^\infty 
-=\mathcal X_N$ is a finite polytope.
+-\Gamma x\leq{\bf{1}}\}$, let the pair $(\Psi,\Gamma)$ be observable and let $\mathcal V(x)$ be defined by~\eqref{eq:PWA:distrubance:set}
+with a piecewise affine $H$, 
+then $\mathcal X_N\subseteq \mathcal X_{N+1}$ for a finite $N$. Hence the MRPI set $\mathcal X^\infty 
+=\mathcal X_N$ is a polytope.
 \end{thm}
 %
 \begin{proof}
+Notice that with~\eqref{eq:set:iteration:state:dependent:constraints} it is easy to see that in early
+iterations the parametric Pontryagin difference can yield the empty set. The empty set however is
+an admissible polytope, i.e. an admissible MRPI set. For the remainder of this proof we assume
+that the MRPI set is non-empty. For this notice that on any compact set $\mathcal S\subset\mathbb R^n$ we
+have $\bigcup_{s\in\mathcal S}\mathcal V(s)$ is compact.
+
 The proof has two main steps: First we will prove that $\mathcal X_p$ is compact for $p\leq n$
 where $n$ is the state dimension. The second step is to prove that in~\eqref{eq:set:iteration:state:dependent:constraints}
 the set $D_k$ grows exponentially, i.e. that for any given compact set $\mathcal C$ there exists
@@ -311,19 +334,20 @@ having a trivial kernel. But this then implies that the set $\mathcal P_{n+1} = 
 \Omega x\leq{\bf{1}}\wedge-\Omega x\leq{\bf{1}}\} = \bigcap_{l\leq n+1} \Psi^{-l} B$ is bounded.
 Notice that the containment $\mathcal X_k\subseteq \mathcal P_k$ holds for all $k$ and hence
 the set $\mathcal X_{n+1}$ is also bounded. The case that $\tilde N<n$ occurs when $\Gamma$
-has more than rank one. To see that $D_k$ grows exponentially we use that $\mathcal V(\mathcal X_0)$
-is bounded, let $K_1$ denote the smallest ball that contains $\mathcal V(\mathcal X_0)$ and let
+has more than rank one. To see that $D_k$ grows exponentially we use that $\mathcal V(\mathcal X_{n+1})$
+is bounded, let $K_1$ denote the smallest ball that contains $\mathcal V(\mathcal X_{n+1})$ and let
 $\bar\lambda$ denote the magnitude of the largest eigenvalue of $\Psi$. Furthermore, let $K_1$
 be the biggest ball that is contained in $\mathcal X_{0}$. $D_k$ has the representation
 \begin{equation}
-D_k = \underbrace{\Psi^{-k}\mathcal X_0}_{(\ast)} \ominus \underbrace{\left(\bigoplus_{i\leq k-1} 
-\Psi^i\mathcal V(\mathcal X_k)\right)}_{(\ast\ast)}.
+D_k = \underbrace{\Psi^{-k}\mathcal X_0}_{(i)} \ominus \underbrace{\left(\bigoplus_{i\leq k-1} 
+\Psi^i\mathcal V(\mathcal X_k)\right)}_{(ii)}.
 \end{equation}
 Since $\Psi$ is asymptotically stable we know that $\bar\lambda<1$ and so we have 
-$\bar\lambda^{-l}K_1\subseteq\Psi^{-l} K_1 \subseteq \Psi^{-l}\mathcal X_0 = (\ast)$
-which implies exponential growth of $D_k$ as long as $(\ast\ast)$ is bounded.
-To bound $(\ast\ast)$ we use $(\ast\ast)\subseteq \oplus_{i\leq k-1} \bar\lambda^i K_2 \subseteq
-\frac{1}{1-\bar\lambda} K_2$. This concludes the proof: We proved that $D_k$ grows exponentially,
+$\bar\lambda^{-l}K_1\subseteq\Psi^{-l} K_1 \subseteq \Psi^{-l}\mathcal X_0 = (i)$
+which implies exponential growth of $D_k$ as long as $(ii)$ is bounded. Recall that we assume
+that the MRPI set is non-empty.
+Hence, to bound $(ii)$ we use $k\geq n+1$ where $(ii)\subseteq \oplus_{i\leq k-1} \bar\lambda^i K_2 \subseteq
+\frac{1}{1-\bar\lambda} K_2$ holds. This concludes the proof: We proved that $D_k$ grows exponentially,
 that it contains an exponentially growing ball. We proved that the subtrahend is bounded inside a ball of
 finite radius, and hence we conclude that after a finite number of iterations $N$ intersecting with $D_{N+1}$
 will no longer change $\mathcal X_N$.
@@ -352,7 +376,7 @@ example.
 %
 %
 %
-In this section we discuss the calculation of the mRPI set for a simplified model of the levitating
+In this section we discuss the calculation of the MRPI set for a linearised simplified model of the levitating
 ball system depict in figure~\ref{fig:levitating:ball}. The system dynamics for the ball are given
 by $m \ddot y = m g - c\frac{i^2}{y^2}$, where $m,g,c,i$ and $y$ denote the mass of the ball, the gravitational
 constant, a constant factor, the current and the distance between the coil and the centre of the ball respectively.
@@ -371,12 +395,18 @@ Linearising the nonlinear differential equation $\dot x = f(x,u)$ around $\hat x
 %
 We derive discrete time system dynamics using the explicit Euler formula $x^+=x+T_s f(x,u) =:\tilde f(x,u)$,
 with the sampling rate $T_s$. We hence define the system matrix $A = (I+T_s\frac{\partial f}{\partial x}(\hat x,\hat u))$
-and the input matrix $B = T_s \frac{\partial f}{\partial u}(\hat x,\hat u)$. In order to obtain a 
-representation of additive disturbances depending on the state and input like~\eqref{eq:definition:disturbance:set}
-we use the mean-value theorem for vector valued functions:
+and the input matrix $B = T_s \frac{\partial f}{\partial u}(\hat x,\hat u)$. 
+Notice that using a non-autonomous model does not affect our analysis since we analyse the closed loop system
+governed by a linear state feedback controller $u=Kx$. To cope with disturbance optimally we use $K$ 
+being the solution to robust Lyapunov condition $V(x)-V((A+BK)x+Dw)\leq \gamma^2w^Tw$ with $V(x)=x^T P x\geq0$, i.e.
+$x^TPx - ((A+BK)x+Dw)^TP((A+BK)x+Dw)\geq x^T(Q+K^TRK)x -\gamma^2 w^Tw$ for a minimised $\gamma^2$, 
+see e.g.~\cite{Boyd:94}.
+In order to obtain a 
+representation of additive disturbances depending on the state and input like~\eqref{eq:PWA:distrubance:set}
+we use the mean-value theorem for vector valued functions, see e.g.~\cite{Apostol:1974}:
 %
 %
-\begin{thm}\label{thm:mean:value:theorem}
+\begin{thm}[Mean Value Theorem]\label{thm:mean:value:theorem}
 Let $\mathcal X\subset\mathbb R^n$ be open, $g : \mathcal X \rightarrow\mathbb R^m$ continuously differentiable, 
 and $x \in\mathcal X, h \in\mathbb R^n$ vectors such that the 
 whole line segment $x + th$ remains in $\mathcal X$ for $0 \leq t \leq 1$. Then
@@ -405,10 +435,11 @@ get the successor state:
 	\end{split}
 \end{equation}
 %
-This implies that for any linearised state $\tilde x$ we obtain the expression
+This implies that for any state $\tilde x$ of linearised we obtain the expression
 $\tilde x^+ = A\tilde x+B\tilde u + H^x\tilde x + H^u \tilde u$, however the computation
-of $H^x$ and $H^u$ requires solving a nonlinear integral. Assume that inside given compact system
-constraints $\mathcal X$ and $\mathcal U$ we had extremal values of $H^x$ and $H^u$, i.e.
+of $H^x$ and $H^u$ requires solving a nonlinear integral. Assume that
+for $x\in\mathcal X$ and $u\in\mathcal U$, where $\mathcal X$ and $\mathcal U$ are compact
+sets, we had extremal values of $H^x$ and $H^u$, i.e.
 $H^x\tilde x+H^u\tilde u\in\conv_k\{H^x_k\tilde x + H^u_k\tilde u\}$ for all $(\tilde x,\tilde u)\in\mathcal X\times \mathcal U$.
 Clearly, we can then introduce the element wise bound disturbance 
 %
@@ -422,11 +453,14 @@ H^x_{k,i}x+H^u_{k,i}u\}\leq v_i\,\wedge\right. \\ \left.v_i \leq \max_k\{H^x_{k,
 With this set we can
 guarantee that $\tilde x^+ = A\tilde x + B\tilde u + v$ accounts for all nonlinearities within $\mathcal X
 \times\mathcal U$ if we constraint $v\in\mathcal V(\tilde x,\tilde u)$. For general nonlinear systems
-finding the extremal values of $(H^x,H^u)$ can not be done easily, so for the example of the 
-levitating ball we use the parameters: $Ts=30ms, C=1, m=100g, \hat x_1 = 50mm$ and $\mathcal X=\{x:
+finding the extremal values of $(H^x,H^u)$ can not be done easily.
+To obtain values for $(H^x_k,H^u_k)$ we sample $\mathcal X\times\mathcal U$ and evaluate the integral 
+expressions defining $(H^x_k,H^u_k)$ pointwise. For this we use the numerical values for the example of the 
+levitating ball: $Ts=30ms, C=1, m=100g, \hat x_1 = 50mm$ and $\mathcal X=\{x:
 \abs{\hat x_1-x_1}\leq 1mm\wedge \abs{x_2}\leq 105\frac{mm}{s}\}$, $\mathcal U=\{u:\abs{\hat u-u}\leq10mA\}$.
-Using 25 samples of $(H^x,H^u)$ we obtain the invariant set shown in figure~\ref{fig:mrpi:set:levitating:ball},
+Using a total of 25 samples for the computation of $(H^x,H^u)$ we obtain the invariant set shown in figure~\ref{fig:MRPI:set:levitating:ball},
 which is less conservative than using fixed bounds on the nonlinearities as we will see in the next example.
+The algorithm terminates after 3 iterations.
 %
 %
 \begin{figure}
@@ -459,22 +493,26 @@ which is less conservative than using fixed bounds on the nonlinearities as we w
 }
 \end{lpic}
 \caption{The maximal robust positive invariant set for the levitating ball system.}
-\label{fig:mrpi:set:levitating:ball}
+\label{fig:MRPI:set:levitating:ball}
 \end{figure}
 %
 %
 %
 %
 %
-\section{Maximal Robust Positive Invariant Sets for Parametrised Disturbance}\label{sec:mRPI:parametrised}
+\section{Maximal Robust Positive Invariant Sets for Parametrised Disturbance}\label{sec:MRPI:parametrised}
 %
 %
-In this section we describe the computation of the mRPI set for~\eqref{eq:system:equation}
+In this section we describe the computation of the MRPI set for~\eqref{eq:system:equation}
 but using a disturbance set that is parametrised for scaling, i.e. $\mathcal V(\theta) = \{v: Gv\leq(1+\theta){\bf{1}}\} 
 = (1+\theta)\mathcal V(0)$, for $\theta>-1$. We will be able to combine the uniform scaling of 
 the disturbance set $\mathcal V(\theta)$ with non-uniform scaling of the input constraint set
-$\mathcal U({\bf{\alpha}}) = \{u: Fu\leq\left(I+\text{diag}(\alpha_1,\dots,\alpha_p)\right){\bf{1}}\}$, 
-this can be used to study closed loop systems subject to a given feedback controller.
+$\mathcal U({\bf{\alpha}}) = \{u: Fu\leq\left(I+\text{diag}(\alpha_1,\dots,\alpha_p)\right){\bf{1}}\}$.
+The necessity of uniform scaling of the disturbance constraints is due to a finesse we use to avoid
+solving multiparametric linear programs in every substep of the proposed iteration.
+A representation of the MRPI set of a system parametrised with respect to a scaling parameter allows us
+to study the system's sensitivity to \emph{stronger/weaker} disturbance, the sensitivity to input 
+constraints can be useful to choose particular actuators.
 %
 \begin{rem}
 The set $\mathcal V(\theta)$ is nonempty and contains the origin for all $\theta>-1$ and hence the 
@@ -491,9 +529,9 @@ maximum
 is positive for any nonzero $c$.
 \end{rem}
 %
-In the following we describe an algorithm to compute the mRPI set $\mathcal Z^\infty$ contained in 
+In the following we describe an algorithm to compute the MRPI set $\mathcal Z^\infty$ contained in 
 $\mathcal Z = \{(x,\theta):\mathcal F_i x+\mathcal G_i\theta \leq 1,\forall\, i\leq m\}$.
-As in the state dependent case we iteratively introduce constraints \emph{cutting off} points
+As in the state dependent case we iteratively introduce constraints \emph{separating} points
 for which the successor state can lie outside the previous set, i.e. starting from $Z_0 = \mathcal Z$
 we determine the first iterate by enforcing all individual constraints onto all possible successor states:
 $Z_1=Z_0\cap D_0$ where $D_0$ is defined by
@@ -528,18 +566,15 @@ v_{l,i}^\ast = \begin{array}{rl}\max & \mathcal F_i \Psi^{l} v \\ \text{s.t.}& G
 Notice that~\eqref{eq:definition:v:ast} can be represented in various ways:
 %
 \[
-\begin{array}{rl}
-\max&\mathcal F_i \Psi^l v \\ \text{s.t.}&v\in\bar{\mathcal{V}}
-\end{array} = 
-\begin{array}{rl}
-\max&\mathcal F_i \tilde  v \\ \text{s.t.}&\Psi^{-l} \tilde v\in\bar{\mathcal{V}}
-\end{array} = 
-\begin{array}{rl}
-\max&\mathcal F_i v \\ \text{s.t.}& \tilde v\in\Psi^l\bar{\mathcal{V}}
+\small
+\begin{array}{rlcrlcrl}
+\max&\mathcal F_i \Psi^l v &=& \max&\mathcal F_i \tilde  v &=& \max&\mathcal F_i v \\ 
+\text{s.t.}&v\in\bar{\mathcal{V}} & & \text{s.t.}&\Psi^{-l} \tilde v\in\bar{\mathcal{V}} & &
+\text{s.t.}& \tilde v\in\Psi^l\bar{\mathcal{V}}
 \end{array}
 \]
 %
-$\bar{\mathcal{V}}=\mathcal V(0)$ for notational convenience. So that for any fixed $\hat\theta>-1$
+where $\bar{\mathcal{V}}=\mathcal V(0)$ for notational convenience. For any fixed $\hat\theta>-1$
 we have the closed form description
 %
 \begin{equation}\label{eq:closed:form:parametrised:iterates}
@@ -552,7 +587,7 @@ we have the closed form description
 \end{split}
 \end{equation}
 %
-The iteration terminates when $Z_k\subseteq Z_{k+1}$. Like in section~\ref{sec:state:dep:mrpi}
+The iteration terminates when $Z_k\subseteq Z_{k+1}$. As in section~\ref{sec:state:dep:MRPI}
 we will require $\mathcal Z\vert_{\hat\theta}$ to be contained in an observable band, i.e. that 
 the set $\{x:\mathcal Fx \leq {\bf{1}}-\mathcal G\hat\theta\}=\mathcal Z\vert_{\hat\theta}\subseteq
 \mathcal B=\{x:\Gamma x\leq {\bf{1}}\wedge -\Gamma x\leq {\bf{1}}\}$ for all $\hat\theta>-1$. We have the
@@ -561,13 +596,15 @@ the set $\{x:\mathcal Fx \leq {\bf{1}}-\mathcal G\hat\theta\}=\mathcal Z\vert_{\
 Let the system constraints be contained in a band $\mathcal Z\vert_{\hat\theta}\subseteq\mathcal 
 B=\{x:\Gamma x\leq {\bf{1}}\wedge -\Gamma x\leq {\bf{1}}\}$ for any fixed $\hat\theta$, let the
 pair $(\Psi,\Gamma)$ be observable and let $\mathcal V(0)$ be bounded, then $Z_N\subseteq Z_{N+1}$
-for a finite $N$. Hence the mRPI set $\mathcal Z^\infty = Z_N$ is a finite polyhedron.
+for a finite $N$. Hence the MRPI set $\mathcal Z^\infty = Z_N$ is a finite polyhedron.
 \end{thm}
+\note{You wrote to highlight $\mathcal V(0)$ being bounded was an assumption. It is necessary so I 
+don't know what to do with this.}
 %
 \begin{proof}
-The argumentation in this completely analogue to the one in Lemma~\ref{thm:finite:mRPI:set:state:dependable}.
+The proof is, completely analogue to the proof of Lemma~\ref{thm:finite:MRPI:set:state:dependable}.
 First we argue that for each fixed $\hat\theta$ the set $Z_k\vert_{\hat\theta}$ becomes compact using the same
-observability argument as in Lemma~\ref{thm:finite:mRPI:set:state:dependable}.
+observability argument as in Lemma~\ref{thm:finite:MRPI:set:state:dependable}.
 We then use the representation~\eqref{eq:closed:form:parametrised:iterates} to argue that $D_k$ as
 in~\eqref{eq:parametrised:Dk} grows exponentially and therefore contains any compact set after a finite number
 of iterations. The fact that $\theta$ was fixed to $\hat\theta$ does not change anything since
@@ -588,26 +625,27 @@ the elements of $\mathcal H$ remain unchanged. In the next section we will illus
 \section{Example}\label{sec:second:example}
 %
 %
-In this section we compute the mRPI set for the levitating ball exemplary system presented in 
-section~\ref{sec:first:example} as well as for a direct torque fed pendulum to illustrate both
+In this section we compute the MRPI set for the levitating ball example system presented in 
+section~\ref{sec:first:example} as well as for a purely numerical model to illustrate both
 the effectiveness of the afore presented algorithm for state dependent disturbances as well as
-the system analysis tool that is the parametrised mRPI set. First we present the parametrised mRPI
+the system analysis tool that is the parametrised MRPI set. First we present the parametrised MRPI
 set for the levitating ball, notice that in order to obtain comparable results we need to get fixed bounds
-on the effect of nonlinearities on each state, i.e. a constant version 
-of~\eqref{eq:definition:element:wise:constraints:on:nonlinearities}. Using the same constraint set 
+on the effect of nonlinearities on each state, i.e. a fixed set containing the set $\mathcal V(x,u)$ 
+in~\eqref{eq:definition:element:wise:constraints:on:nonlinearities} for all $(x,u)\in\mathcal X\times\mathcal U$. 
+Using the same constraint set 
 $\mathcal X \times \mathcal U$ to determine the maximal and minimal values for nonlinear effects
 we obtain a constant set which is non symmetric around the origin due to nonlinearity. We also introduce
-a scaling parameter $\alpha$ such that $\mathcal U(0)=\mathcal U$. For this setup we obtain the mRPI
+a scaling parameter $\alpha$ such that $\mathcal U(0)=\mathcal U$ for $\alpha=0$. For this setup we obtain the MRPI
 set $\mathcal Z^\infty=\{(x,\theta,\alpha): \Lambda_i^x x + \Lambda_i^\theta \theta + \Lambda_i^\alpha \alpha\leq
 \lambda_i\,\forall i\leq m_\infty\}$. Notice that since $\alpha$ was introduced as a scaling parameter
 for $\mathcal U(\alpha)=\{u: Fu\leq (1+\alpha){\bf{1}}\}$ all entries in $\mathcal H$ are non positive and
 remain unchanged throughout the computation of $\mathcal Z^\infty$ so that $\Lambda^\alpha$ has only non
-positive entries, i.e. increasing $\alpha$ will enlarge the parametrised mRPI set $\mathcal Z^\infty\vert_{\alpha_1}
+positive entries, i.e. increasing $\alpha$ will enlarge the parametrised MRPI set $\mathcal Z^\infty\vert_{\alpha_1}
 \subseteq\mathcal Z^\infty\vert_{\alpha_2}$ for $\alpha_1\leq\alpha_2$.
 
-First we want to compare the mRPI set $\mathcal X^\infty$ obtained with state dependent disturbance 
+First we want to compare the MRPI set $\mathcal X^\infty$ obtained with state dependent disturbance 
 constraints with the parametrised one $\mathcal Z^\infty$. To do this we compute the scaling parameter 
-$\alpha_{\min}$ such that $\mathcal X^\infty\subseteq\mathcal Z^\infty\vert_{(0,\alpha_{\min})}$.
+$\alpha_{\min}$ such that $\mathcal X^\infty\subseteq\mathcal Z^\infty\vert_{(\theta=0,\alpha=\alpha_{\min})}$.
 We can do this by solving $m_\infty$ linear programs
 %
 %
@@ -622,10 +660,12 @@ We can do this by solving $m_\infty$ linear programs
 %
 The minimal value for $\alpha_{\min}$ is then given by the maximal $\alpha$ satisfying $\gamma_i^\ast + 
 \Lambda_i^\theta\cdot 0 + \Lambda_i^\alpha \alpha \leq \lambda_i$. Solving this we obtain the 
-minimal value $\alpha_{\min} = 1.7555$ and the mRPI sets shown in Figure~\ref{fig:minimal:scaling:comparison:mRPIs}.
-Caution is advised when interpreting $\alpha>0$, since the system is nonlinear extrapolations bare very
+minimal value $\alpha_{\min} = 1.7555$ and the MRPI sets shown in Figure~\ref{fig:minimal:scaling:comparison:MRPIs}.
+The computation terminates after seven iterations and produces a polyhedron $\mathcal Z^\infty$ supported by $m_\infty=10$
+planes.
+Caution is advised when interpreting $\alpha>0$, since the system is nonlinear extrapolations reveal very
 little insight, the only information we can safely extract is that the current set of inputs $\mathcal U(0)=\mathcal U$ 
-is not large enough to cope with the perturbation set containing given by upper bounds of the nonlinear effects.
+is not large enough to cope with the perturbation set given by upper bounds of the nonlinear effects.
 %
 %
 \begin{figure}
@@ -653,45 +693,50 @@ is not large enough to cope with the perturbation set containing given by upper 
 \lbl[l]{93,32;$\longleftarrow\mathcal X^\infty$}
 \lbl[r]{68,43;$\mathcal Z^\infty\vert_{(\alpha_{\min},0)}\longrightarrow$}
 \end{lpic}
-\caption{Minimal scaling for mRPI set computed for constant disturbance which contains
- mRPI set for piecewise affine disturbances is $\alpha=1.7555$. Note that since the nonlinearities of the system
- dynamics are not symmetrical around the equilibrium the mRPI set with fixed constraints on the perturbation
+\caption{Minimal scaling for MRPI set computed for constant disturbance which contains
+ MRPI set for piecewise affine disturbances is $\alpha=1.7555$. Note that since the nonlinearities of the system
+ dynamics are not symmetrical around the equilibrium the MRPI set with fixed constraints on the disturbance
  is non-symmetric.}
- \label{fig:minimal:scaling:comparison:mRPIs}
+ \label{fig:minimal:scaling:comparison:MRPIs}
 \end{figure}
 
 
-In the second example we compute the parametrised mRPI set for the system
+In the second example, we compute the parametrised MRPI set for the system
+%
 $$
 x^+ = \underbrace{\left(\begin{array}{cc}1 & 2 \\ 0 & 1\end{array}\right)}_Ax + 
 \underbrace{\left(\begin{array}{cc} 1 & 1 \\ 1 & -1\end{array}\right)}_B u + 
-\underbrace{\left(\begin{array}{cc} 1 & 2 \\ 2 & 1 \end{array}\right)}_D w
+\underbrace{\left(\begin{array}{cc} 1 & 2 \\ 2 & 1 \end{array}\right)}_D w.
 $$
+%
 We use the constraint sets $\mathcal U(\alpha) = \{u: Fu\leq(I+\text{diag}(\alpha)){\bf{1}} \wedge
 -Fu\leq (I+\text{diag}(\alpha)){\bf{1}}\}$ and $\mathcal V(\theta) = D\mathcal W(\theta)$ where $\mathcal W(\theta) = \{w:
 \abs{w_1}\leq 0.1(1+\theta)\wedge \abs{w_2}\leq 0.15(1+\theta)\}$. The constraint matrix $F$ is given by
+%
 $$
 	F = \left(\begin{array}{cc} 2 & 2 \\ 4 & 0 \\ 2 & -2 \end{array}\right).
 $$
+%
+All constraints were mainly chosen to be illustrative.
 We can now analyse the effect of changing individual constraints on the input by changing $\alpha$ as well as the
 effect of perturbations. To initialise the iteration we use
 $\mathcal Z(x,\theta,\alpha) = \left\{(x,\theta,\alpha): Kx\in\mathcal U(\alpha)\wedge K_w x\in\mathcal W
-(\theta)\wedge \alpha,\theta>-{\bf{1}}\right\}$, with $K$ and $K_w$ being the solution to the semidefinite program
+(\theta)\wedge \alpha,\theta>-{\bf{1}}\right\}$, with $K$ and $K_w$ being the solution to the aforementioned semidefinite program
 $x^TPx - ((A+BK)x+Dw)^TP((A+BK)x+Dw)\geq x^T(Q+K^TRK)x -\gamma^2 w^Tw$, i.e. $K_w = (\gamma^2-D^TPD)D^TP(A+BK)$.
-We use $Q = \text{diag}(2,1)$ and $R = I$. Using these numerical values we determine the mRPI set 
-$\mathcal Z^\infty$ after 22 iterations, it has 61 facets. Notice that in addition to the sign of 
-the sensitivity of the mRPI set on $\alpha$ we know that since we introduced each facet of $\mathcal Z$
-to depend only on one $\alpha_i$, since the algorithm does not change the elements corresponding to $\alpha$
-and due to orthogonality two facets depending on different elements of $\alpha$ can not be reduced to 
-one facet depending on both. I.e. $\Lambda^\alpha$ has no more than one entry per row. We can therefore 
-compute which $\alpha_i$ will change the mRPI set the most. This can be done by element wise calculating
+We use $Q = \text{diag}(2,1)$ and $R = I$. Using these numerical values we determine the MRPI set 
+$\mathcal Z^\infty$. After 22 iterations the algorithm terminates producing a total of 61 facets. 
+Notice that we not only know the sign of the elements of $\mathcal H$, but we also know that each facet of $\mathcal Z(x,\theta,\alpha)$
+depends at most on one $\alpha_i$, the algorithm does not affect the elements corresponding on $\alpha$ and reduction
+methods can not reduce rows depending on two individual variables, therefore we know that $\Lambda^\alpha$ will have at 
+most one nonzero entry per row. We can therefore 
+compute which $\alpha_i$ will change the MRPI set the most. This can be done by element wise calculating
 $$
 	\max_i  \frac{-\Lambda_i^\alpha}{\norm{\Lambda_i^x}_2}.
 $$
 In our example the greatest sensitivity corresponds to $\alpha_3$ with a numerical value of $2.6458\times 10^9$, 
 i.e. the third input constraint.
-Analogue to the first example we might want to know how much disturbance the closed loop system can 
-take such that a given set is contained in the mRPI set $\mathcal C\subseteq\mathcal Z^\infty\vert_{(\theta,0)}$.
+Analogous to the first example we might want to know how much disturbance the closed loop system can 
+take such that a given set is contained in the MRPI set $\mathcal C\subseteq\mathcal Z^\infty\vert_{(\theta,0)}$.
 We used the non-positivity of $\mathcal H$ to argue the non-positivity of $\Lambda^\alpha$, however we
 can not use a similar argument for $\Lambda^\theta$, in fact it is easy to see that both signs are likely to be 
 present in $\Lambda^\theta$. The condition $\theta>-1$ implies that $\Lambda^\theta$ has at least one negative
@@ -714,25 +759,25 @@ $$
 	\end{array}
 	\right. .
 $$
-The extremal values for which $\mathcal C$ is contained in the mRPI set are given by
+The extremal values for which $\mathcal C$ is contained in the MRPI set are given by
 the smallest $\theta_{\max}$ satisfying $\gamma_i+\Lambda^{1,\alpha}_i\hat\alpha+
 \Lambda^{1,\theta}_i\theta_{\max}\leq\lambda_i^1$ and the largest $\theta_{\min}$ 
 satisfying $\delta_i+\Lambda^{2,\alpha}_i\hat\alpha+\Lambda^{2,\theta}_i\theta_{\min}\leq\lambda_i^2$
 The numerical values for the example are given by $[\theta_{\min},\theta_{\max}]=[-0.9999,6.2582]$.
-A two and three dimensional illustration of the parametrised mRPI set is given in Figure~\ref{fig:two:dim:example}
+A two and three dimensional illustration of the parametrised MRPI set is given in Figure~\ref{fig:two:dim:example}
 and~\ref{fig:three:dim:example} respectively.
 %
 %
 %
 \begin{figure}
 \includegraphics[width=\columnwidth]{twoDimensional}
-\caption{The extremal mRPI sets $\mathcal Z^\infty\vert_{({\bf{0}},\theta_{min})}$ and $\mathcal Z^\infty
+\caption{The extremal MRPI sets $\mathcal Z^\infty\vert_{({\bf{0}},\theta_{min})}$ and $\mathcal Z^\infty
 \vert_{({\bf{0}},\theta_{\max})}$ containing the unit box.}
 \label{fig:two:dim:example}
 \end{figure}
 \begin{figure}
 \includegraphics[width=\columnwidth]{threeDimensional}
-\caption{The parametrised mRPI set for $\alpha={\bf{0}}$. Containing the unit box in the 
+\caption{The parametrised MRPI set for $\alpha={\bf{0}}$. Containing the unit box in the 
 interior between $\theta_{\min}$ and $\theta_{\max}$.}
 \label{fig:three:dim:example}
 \end{figure}
@@ -741,13 +786,13 @@ interior between $\theta_{\min}$ and $\theta_{\max}$.}
 %
 \section{Conclusions}\label{sec:conclusions}
 %
-In this paper we discussed extensions to existing computational methods to determine mRPI sets
+In this paper we discussed extensions to existing computational methods to determine MRPI sets
 for linear systems subject to additive disturbance in two cases. The case of state dependent case
-which can be applied to determine approximations to mRPI sets for linearised nonlinear systems as was shown
-for the example of a levitating ball system. We also introduced the computation of mRPI sets using 
+which can be applied to determine approximations to MRPI sets for linearised nonlinear systems as was shown
+for the example of a levitating ball system. We also introduced the computation of MRPI sets using 
 scaling parameters which allows various system analyses using uniform scaling for the disturbance sets
 and non-uniform scaling for the input constraints. The effectiveness of state dependent disturbance
-sets was demonstrated by comparing the two mRPI methods.
+sets was demonstrated by comparing the two MRPI methods.
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,MyLib}
 %
