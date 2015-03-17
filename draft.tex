@@ -11,6 +11,7 @@
 \usepackage{amssymb}
 \usepackage{cite}
 \usepackage{lpic}
+\usepackage{overpic}
 % \usepackage{blkarray}
 \usepackage{mathrsfs}
 \usepackage{todonotes}
@@ -43,7 +44,8 @@
 \graphicspath{{./Pix/}}
 
 \begin{document}
-  \title{Advances in Robust Positive Invariant Set Computation}
+%  \title{Advances in Robust Positively Invariant Set Computation}
+  \title{Robust positively invariant sets for state dependent and scaled disturbances}
 
 \author{Rainer M. Schaich\textsuperscript{\dag} %
          and Mark Cannon\textsuperscript{\dag,\ddag}%
@@ -56,11 +58,7 @@
 \maketitle
 
 \begin{abstract} 
-In this paper we introduce methods of deriving and computing maximal positive robust invariant
-sets for linear discrete time systems with additive uncertainty. We consider two different sets of
-uncertainties, state dependent uncertainty which allows us to handle multiplicative as well as
-linearised systems easily, and scaled sets of uncertainty. We provide the framework for the analytic
-treatment of both and illustrate their benefits in two numerical examples.
+  This paper introduces methods of deriving and computing maximal robust positively invariant sets for linear discrete time systems with additive model uncertainty. Two types of uncertainty are considered: state dependent uncertainty, which handles multiplicative parametric model uncertainty as well as linearisation errors for nonlinear systems, and scaled sets of uncertainty. We provide a framework for analysing both types of uncertainty with illustrative examples.
 \end{abstract}
 
 \begin{keywords}
@@ -68,67 +66,62 @@ treatment of both and illustrate their benefits in two numerical examples.
 \end{keywords}
 
 \section{Introduction}
-Ever since the introduction of disturbance invariant sets in~\cite{Glover:1971}, the analytic
-properties of these sets have been fairly well studied, see~\cite{blanchini:2007}. Here by disturbance
-invariant sets we mean a subset of the state constraint set $\mathscr X\subseteq\mathcal X_0\subseteq\mathbb R^n$ 
-containing initial conditions for the perturbed linear system
+The analytic properties of disturbance invariant sets have been widely studied (see e.g.~\cite{blanchini:2007}) since their introduction in~\cite{Glover:1971}. A disturbance invariant set $\mathscr X$ is a subset of the state constraint set $\mathcal X_0\subseteq\mathbb R^n$ that contains states $x$ of the perturbed linear system
 \begin{equation}\label{eq:system:equation}
-	x^+ = \Psi x + v,
+	x^+ = \Psi x + v
 \end{equation}
-where $\Psi$ is Hurwitz, $x,x^+\in\mathcal X_0$ the state and the successor state, and where 
-$v\in\mathscr V$ denotes the perturbation, such that the successor state is contained in the 
-disturbance invariant set $x^+\in\mathscr X$ for all possible realisations of the 
-perturbation $v\in\mathscr V$. That is summarised in the implicit definition
+(where $\Psi$ is Hurwitz, $x,x^+\in\mathcal X_0$, and 
+$v\in\mathscr V$) such that the successor state $x^+$ is contained in the 
+disturbance invariant set for all possible realisations of the 
+unknown disturbance $v$. This is summarised in the implicit definition
 \begin{equation}\label{eq:definition:MRPI:set:state:dependent}
 	\mathscr X = \{x:\Psi x + v\in\mathscr X\; \forall v\in\mathscr V\}.
 \end{equation}
-These sets are known as robust positive invariant (RPI) sets. In many applications we are interested in the largest such
-set $\mathcal X^\infty$, i.e. the set containing all other RPI sets $\mathscr X\subseteq\mathcal X^\infty$,
-this set is called the maximal robust positive invariant (MRPI) set. These sets are used e.g. as terminal regions in 
-robust model predictive control. Even though analytical properties
-of these sets were derived early after their introduction, it took more than two decades until algorithms
-were introduced to numerically compute MRPI sets~\cite{DeSantis:1994,Kolmanovsky:1995,Blanchini:1994}. 
-\note{You commented 'check', I didn't know what that meant.}
+Thus an disturbance invariant set is a type of robust positive invariant (RPI) set. In many applications we are interested in the largest such
+set, denoted $\mathcal X^\infty$, which is given by the union of all RPI sets $\mathscr X\subseteq\mathcal X^\infty$. This set is known as the maximal robust positive invariant (MRPI) set and has been used extensively, for example to define terminal regions in 
+robust model predictive control. Although analytical properties
+of these sets were derived soon after their introduction, algorithms for numerically computing MRPI sets were introduced much later~\cite{DeSantis:1994,Kolmanovsky:1995,Blanchini:1994}. 
+%\note{You commented 'check', I didn't know what that meant.}
 Earlier algorithms
 did not guarantee finite determinability of $\mathcal X^\infty$, see e.g.~\cite{Blanchini:1990}, or 
 did not guarantee to produce the maximal RPI set, e.g.~\cite{Blanchini:1991}. 
 %
-In the afore mentioned algorithms the perturbation was considered to belong to a fixed compact set, in this paper
-we consider sets that vary with parameters. First we consider the set of disturbances to be state dependent, e.g.
+However for the case of disturbances that belong to a fixed set $\mathscr V$, methods of computing $\mathcal X^\infty$ are well established~\cite{blanchini:2007}.
+
+This paper considers
+sets of disturbances that depend on parameters. First we consider disturbance sets that are state dependent, of the form
 \begin{equation}\label{eq:PWA:distrubance:set}
 	\mathcal V(x) = \left\{v: Gv\leq H(x)\right\},
 \end{equation}
-where $H(x)$ is a piecewise affine function. This means that in the first part of the paper
-we discuss the computation of $\mathcal X^\infty$ for the case where $\mathscr V=\mathcal V(x)$.
-The case where the disturbance depends on the state has been studied analytically before but not 
-extensively, see~\cite{Kuntsevich:1995}. These kind of disturbance constraints can be used to
-account for linearisation errors, as will be shown in section~\ref{sec:first:example}, but can also
-be used to treat multiplicative uncertainty.
+where $H(x)$ is a piecewise affine function. For the case that $\mathscr V=\mathcal V(x)$ we
+provide conditions for convexity and finite determination of $\mathcal X^\infty$ and discuss computation of $\mathcal X^\infty$.
+The case of disturbances depending on states (or control inputs) is considered in~\cite{Kuntsevich:1995,rakovic06}, but the convexity analysis of this paper is novel. State dependent disturbance constraints can 
+account for linearisation errors, as shown in section~\ref{sec:first:example}, as well as more general multiplicative parametric model uncertainty.
 
-The second case we consider is the case of a scaled set of disturbance, i.e.
+The second case considered is that of scaled disturbance sets of the form
 \begin{equation}
   \mathcal V(\theta) = \{v:Gv\leq(1+\theta){\bf{1}}\},
 \end{equation}
-with $\theta>-1$. To distinguish the resulting sets from regular MRPI sets we use $\mathcal Z^\infty$
-to emphasise that $\mathcal Z^\infty$ itself is not an MRPI set, however by fixing $\theta=\hat\theta$ the
-set $\mathcal Z^\infty\vert_{\hat\theta}$ is an MRPI set. To our best knowledge, this setup has not been 
-presented in the literature. This type of disturbance constraints can be used to study the sensitivity of
+for scalar $\theta>-1$. For $\mathscr V = \mathcal V(\theta)$ we compute sets $\mathcal Z^\infty$ in $(x\times\theta)$-space with the property that 
+% To distinguish the resulting sets from regular MRPI sets we use $\mathcal Z^\infty$
+% to emphasise that $\mathcal Z^\infty$ 
+the intersection, $\mathcal Z^\infty\vert_{\hat\theta}$, with the subspace on which $\theta=\hat\theta$ for given $\hat\theta$ is an MRPI set. To our best knowledge, this setup has not been 
+considered in the literature. This type of disturbance constraint can be used to study the sensitivity of
 the MRPI set to changes in the disturbance \emph{strength}.
 
-The remainder of this paper is structured: In section~\ref{sec:parametrically:convex:set:operations} we
-introduce the notion of \emph{parametric convexity} and of its general implications, this is sufficient 
+The paper is structured as follows: In section~\ref{sec:parametrically:convex:set:operations} we
+introduce the notion of \emph{parametric convexity} and discuss its implications, in particular as a condition 
 for the convexity of the MRPI set. The algorithm to compute the MRPI set for state dependent disturbance
-constraints is presented in section~\ref{sec:state:dep:MRPI}, we also prove its finite determinability.
-In section~\ref{sec:first:example} we demonstrate the algorithm using a numerical exemplary system, a
-levitating ball setup. The case of scaled disturbance constraints is discussed in section~\ref{sec:MRPI:parametrised}
+constraints is presented in section~\ref{sec:state:dep:MRPI}, and we also prove its finite determinability.
+In section~\ref{sec:first:example} the algorithm is illustrated using an exemplar system, a magnetically levitated ball. The case of scaled disturbance constraints is discussed in section~\ref{sec:MRPI:parametrised}
 where the algorithm for the parametrised MRPI set as well as the proof for its finite determinability
 are also presented. Section~\ref{sec:second:example} illustrates the use of parametrised MRPI sets using
-again the levitating ball example and illustrating some of possible robustness analyses of the parametrised
+again the levitating ball example and illustrating a robustness analyses of the parametrised
 MRPI sets with a numerical example. The paper is concluded in section~\ref{sec:conclusions}.
 
-In the remainder of this paper we use the notion of a polyhedra for sets that can be represented as
-the intersection of a finite number of halfspaces, polytopic sets for bounded polyhedral.
-By ${\bf{1}}$ we denote the column vector of ones in appropriate dimension, $\wedge$ denotes the logical and. 
+Throughout this paper we refer to sets that can be represented as intersections of finite numbers of half spaces as polyhedra, and to bounded polyhedra as polytopic sets.
+%By ${\bf{1}}$ we denote 
+Also ${\bf{1}}$ denotes the column vector of ones in appropriate dimensions, and $\wedge$ is the logical AND operator. 
 %
 %
 %
@@ -364,12 +357,19 @@ example.
 %
 \begin{figure}
 \centering
-\begin{lpic}{levitatingBall}
-\lbl[tr]{25,3; $m g$}
-\lbl[br]{25,25; $c\frac{i^2}{x^2}$}
-\lbl[bl]{49,17; $y$}
-\lbl[bl]{56,55; $i$}
-\end{lpic}
+\begin{overpic}[scale=0.75]{levitatingBall}
+\put(30,5){$m g$}
+\put(30,41){$c\frac{i^2}{x^2}$}
+\put(78,28){$y$}
+\put(90,89){$i$}
+\end{overpic}
+% \begin{lpic}[scale=0.5]{levitatingBall}
+% \lbl[tr]{25,3; $m g$}
+% \lbl[br]{25,25; $c\frac{i^2}{x^2}$}
+% \lbl[bl]{49,17; $y$}
+% \lbl[bl]{56,55; $i$}
+% \end{lpic}
+\vspace{-2mm}
 \caption{Levitating ball system.}
 \label{fig:levitating:ball}
 \end{figure}
@@ -598,11 +598,10 @@ B=\{x:\Gamma x\leq {\bf{1}}\wedge -\Gamma x\leq {\bf{1}}\}$ for any fixed $\hat\
 pair $(\Psi,\Gamma)$ be observable and let $\mathcal V(0)$ be bounded, then $Z_N\subseteq Z_{N+1}$
 for a finite $N$. Hence the MRPI set $\mathcal Z^\infty = Z_N$ is a finite polyhedron.
 \end{thm}
-\note{You wrote to highlight $\mathcal V(0)$ being bounded was an assumption. It is necessary so I 
-don't know what to do with this.}
+%\note{You wrote to highlight $\mathcal V(0)$ being bounded was an assumption. It is necessary so I don't know what to do with this.}
 %
 \begin{proof}
-The proof is, completely analogue to the proof of Lemma~\ref{thm:finite:MRPI:set:state:dependable}.
+The proof is similar to that of Lemma~\ref{thm:finite:MRPI:set:state:dependable}.
 First we argue that for each fixed $\hat\theta$ the set $Z_k\vert_{\hat\theta}$ becomes compact using the same
 observability argument as in Lemma~\ref{thm:finite:MRPI:set:state:dependable}.
 We then use the representation~\eqref{eq:closed:form:parametrised:iterates} to argue that $D_k$ as
@@ -770,13 +769,13 @@ and~\ref{fig:three:dim:example} respectively.
 %
 %
 \begin{figure}
-\includegraphics[width=\columnwidth]{twoDimensional}
+\centerline{\includegraphics[scale=0.6]{twoDimensional}}
 \caption{The extremal MRPI sets $\mathcal Z^\infty\vert_{({\bf{0}},\theta_{min})}$ and $\mathcal Z^\infty
 \vert_{({\bf{0}},\theta_{\max})}$ containing the unit box.}
 \label{fig:two:dim:example}
 \end{figure}
 \begin{figure}
-\includegraphics[width=\columnwidth]{threeDimensional}
+\centerline{\includegraphics[scale=0.6]{threeDimensional}}
 \caption{The parametrised MRPI set for $\alpha={\bf{0}}$. Containing the unit box in the 
 interior between $\theta_{\min}$ and $\theta_{\max}$.}
 \label{fig:three:dim:example}
