@@ -70,9 +70,10 @@
 \end{keywords}
 
 \section{Introduction}
-The analytic properties of disturbance invariant sets have been widely studied (see e.g.~\cite{blanchini:2007}) 
-since their introduction in~\cite{Glover:1971}. A disturbance invariant set $\mathscr X$ is a subset of the 
-state constraint set $\mathcal X_0\subseteq\mathbb R^n$ that contains states $x$ of the perturbed linear system
+The analytic properties of disturbance invariant sets have been widely
+studied (e.g.~\cite{blanchini:2007}) 
+since their introduction in~\cite{Glover:1971,bertsekas71}. A disturbance invariant set $\mathscr X$ is a subset of the 
+state constraint set $\mathcal X_0\subseteq\mathbb R^n$ containing states $x$ of the perturbed linear system
 \begin{equation}\label{eq:system:equation}
 	x^+ = \Psi x + v
 \end{equation}
@@ -83,29 +84,32 @@ unknown disturbance $v$. This is summarised in the implicit definition
 \begin{equation}\label{eq:definition:MRPI:set:state:dependent}
 	\mathscr X = \{x:\Psi x + v\in\mathscr X\; \forall v\in\mathscr V\}.
 \end{equation}
-Thus an disturbance invariant set is a type of robust positive invariant (RPI) set. 
+Thus a disturbance invariant set is a type of robust positively invariant (RPI) set. 
 In many applications we are interested in the largest such set, denoted $\mathcal X^\infty$, which is given 
 by the union of all RPI sets $\mathscr X\subseteq\mathcal X^\infty$. This set is known as the maximal robust 
-positive invariant (MRPI) set and has been used extensively, for example to define terminal regions in 
-robust model predictive control. Although analytical properties
+positively invariant (MRPI) set and has been used extensively, for example, to define terminal regions in 
+robust model predictive control~\cite{mayne:2000}. Although analytical properties
 of these sets were derived soon after their introduction, algorithms for numerically computing MRPI sets 
-were introduced much later~\cite{DeSantis:1994,Kolmanovsky:1995,Blanchini:1994}. 
+were introduced much later~\cite{Blanchini:1994,DeSantis:1994,Kolmanovsky:1998}. 
 %\note{You commented 'check', I didn't know what that meant.}
 Earlier algorithms did not guarantee finite determinability of $\mathcal X^\infty$, see e.g.~\cite{Blanchini:1990}, 
 or did not guarantee to produce the maximal RPI set, e.g.~\cite{Blanchini:1991}. 
 %
-However for the case of disturbances that belong to a fixed set $\mathscr V$, methods of computing 
+However for the case of disturbances belonging to a fixed set $\mathscr V$, methods of computing 
 $\mathcal X^\infty$ are well established~\cite{blanchini:2007}.
 
-This paper considers sets of disturbances that depend on parameters. First we consider disturbance 
-sets that are state dependent, of the form
+This paper considers sets of disturbances that depend on
+parameters. First we consider state-dependent sets,
 \begin{equation}\label{eq:PWA:distrubance:set}
 	\mathcal V(x) = \left\{v: Gv\leq H(x)\right\},
 \end{equation}
-where $H(x)$ is a piecewise affine function. For the case that $\mathscr V=\mathcal V(x)$ we
+where $G$ is a real matrix,
+%$G\in\mathbb R^{n_G\times n_v}$, 
+$H(x)$ is a piecewise affine function, and the inequality applies elementwise. For the case that $\mathscr V=\mathcal V(x)$ we
 provide conditions for convexity and finite determination of $\mathcal X^\infty$ and discuss 
 computation of $\mathcal X^\infty$. The case of disturbances depending on states (or control inputs) 
-is considered in~\cite{Kuntsevich:1995,rakovic06}, but the convexity analysis of this paper is novel. 
+is considered in~\cite{Kuntsevich:1995,rakovic06} but the convexity
+analysis of this paper and the associated computational approach are novel. 
 State dependent disturbance constraints can account for linearisation errors, as shown in section~\ref{sec:first:example}, 
 as well as more general multiplicative parametric model uncertainty.
 
@@ -122,32 +126,33 @@ for given $\hat\theta$ is an MRPI set. To our best knowledge, this setup has not
 considered in the literature. This type of disturbance constraint can be used to study the sensitivity of
 the MRPI set to changes in the disturbance \emph{strength}.
 
-The paper is structured as follows: In section~\ref{sec:parametrically:convex:set:operations} we
-introduce the notion of \emph{parametric convexity} and discuss its implications, in particular as a condition 
-for the convexity of the MRPI set. The algorithm to compute the MRPI set for state dependent disturbance
-constraints is presented in section~\ref{sec:state:dep:MRPI}, and we also prove its finite determinability.
-In section~\ref{sec:first:example} the algorithm is illustrated using an exemplar system, a magnetically 
-levitated ball. The case of scaled disturbance constraints is discussed in section~\ref{sec:MRPI:parametrised}
-where the algorithm for the parametrised MRPI set as well as the proof for its finite determinability
-are also presented. Section~\ref{sec:second:example} illustrates the use of parametrised MRPI sets using
-again the levitating ball example and illustrating a robustness analyses of the parametrised
-MRPI sets with a numerical example. The paper is concluded in section~\ref{sec:conclusions}.
+The structure of the paper is as follows: We introduce the notion of \emph{parametric convexity} In
+Section~\ref{sec:parametrically:convex:set:operations} and discuss its implications, in particular as a condition 
+for convexity of the MRPI set. The algorithm to compute the MRPI set for state dependent disturbance
+constraints and its finite determinability are discussed in Section~\ref{sec:state:dep:MRPI}.
+Section~\ref{sec:first:example} illustrates the algorithm using the example of a magnetically 
+levitated ball. The case of scaled disturbance constraints is discussed in Section~\ref{sec:MRPI:parametrised},
+which gives the algorithm for computing the parametrised MRPI set and
+proves its finite determinability. Section~\ref{sec:second:example} illustrates the use of
+parametrised MRPI sets using the levitating ball example, and illustrates a robustness analysis of the parametrised
+MRPI sets with a numerical example. Section~\ref{sec:conclusions}
+provides conclusions.
 
-Throughout this paper we refer to sets that can be represented as intersections of finite numbers of half 
-spaces as polyhedra, and to bounded polyhedra as polytopic sets. ${\bf{1}}$ denotes the column vector of 
-ones in appropriate dimensions, and $\wedge$ is the logical AND operator. 
+Throughout this paper we refer to sets that can be represented as intersections of finite numbers of half spaces as polyhedra, and to bounded polyhedra as polytopic sets.
+Also ${\bf{1}}$ denotes the column vector of ones in appropriate dimensions, and $\wedge$ is the logical AND operator. 
+
 %
 %
 %
 \section{Parametrically convex set operations}\label{sec:parametrically:convex:set:operations}
-In this section we discuss sets that depend on a state-like parameter (so called point-to-set maps, 
-see~\cite{Hogan:1973}), and extend the existing set algebra~\cite{blanchini:2007} to 
+This section discusses sets that depend on a state-like parameter (so called point-to-set maps, 
+see~\cite{Hogan:1973}), and extends the existing set algebra~\cite{blanchini:2007} to 
 accommodate such sets. We present the general case first, then derive the computation of
 the case with piece-wise affine sets.
 %
 %
     \begin{defn}[Parametric Convexity]\label{def:parametric:convexity}
-      Let $X\subseteq\mathbb R^n, Y\subseteq\mathbb R^m$, let $\mathcal P(Y)$ denote the power set of $Y$ 
+      Let $X\subseteq\mathbb R^n, Y\subseteq\mathbb R^m$, let $\mathcal P(Y)$ denote the power set of $Y$, 
       and $T:X\rightarrow \mathcal P(Y)$, $X\ni s\mapsto T(s)\subset Y$ be a 
       continuous point-to-set map. The map $T$ is called \emph{parametrically convex} if it satisfies
       \begin{equation}\label{eq:pconvexdef}
@@ -161,9 +166,7 @@ In (\ref{eq:pconvexdef}), $\oplus$ denotes the Minkowski set addition
         \mathcal A\oplus\mathcal B = \{c : c = a + b\; \forall\,a\in\mathcal A,\, b\in\mathcal B\}.
       \end{equation}
 %
-    In the following we will need to be able to compute differences of sets
-    analogous to the Pontryagin difference in~\cite{Kolmanovsky:1998} but using parametrised 
-    sets, this is defined as follows:
+The difference of sets can be defined for parametrised sets analogously to the Pontryagin difference~\cite{Kolmanovsky:1998} as follows:
 %
     \begin{defn}[Parametric Pontryagin Difference]\label{def:parametric:pontryagin:difference}
 Let $S\subseteq X$ and let $T:X\to\mathcal P(X)$ be a continuous point-to-set map,
@@ -174,10 +177,9 @@ then the \emph{parametric Pontryagin difference} $S\ominus T(S)$ is
       where $T(S)$ denotes the image of $S$ under the map $T$. 
     \end{defn}
 %
-    Notice that for constant maps $T$
-    definition~\eqref{eq:definition:parametric:pontryagin:difference} is equivalent to the 
-    well known Pontryagin difference.
-    For parametric Pontryagin differences of convex sets and parametrically convex maps we have the following result.
+    Notice that, for a constant map $T$, the definition~\eqref{eq:definition:parametric:pontryagin:difference} is equivalent to the 
+    well-known Pontryagin difference.
+    For the parametric Pontryagin difference of a convex set and a parametrically convex map we have the following result.
 %
     \begin{thm}\label{thm:convexity:of:pontryagin:difference}
       Let $S\subseteq X$ be a convex set and let $T:X\rightarrow\mathcal P(X)$ be a parametrically convex point-to-set
@@ -187,9 +189,9 @@ then the \emph{parametric Pontryagin difference} $S\ominus T(S)$ is
     \begin{proof}
       Define $ Z =  S\ominus T( S)$ and let $z_1,z_2\in Z$, then
       by definition of the parametric Pontryagin difference, we have
-      \begin{equation}
+\[%      \begin{equation}
         \{z_i\} \oplus T(z_i) \subseteq S,\; i=1,2.
-      \end{equation}
+\]%      \end{equation}
       To see that $ Z$ is convex we show that line segments between
       all possible $z_1$ and $z_2$ are subsets of $ Z$, i.e.~for all $\lambda \in [0,1]$,
       \[\begin{aligned}
@@ -206,18 +208,24 @@ then the \emph{parametric Pontryagin difference} $S\ominus T(S)$ is
     \end{proof}
 %
 %
-  Consider a point-to-set map defined by~\eqref{eq:PWA:distrubance:set}
-    where, for now, $H$ is elementwise convex in $x\in \mathscr X\subseteq\mathbb R^n$, so that 
-    $H_i(\lambda x_1+(1-\lambda)x_2)\leq \lambda H_i(x_1)+(1-\lambda)H_i(x_2)$ for 
-    $\lambda\in[0,1]$ and $x_1, x_2\in X$.  For such sets we have the following result:
+  % Consider a point-to-set map~\eqref{eq:PWA:distrubance:set},
+  %   where $H$ is elementwise convex in $x\in \mathcal X\subset \mathbb R^n$, with elements $H_i(x)$ satisfying
+  %   $H_i(\lambda x_1+(1-\lambda)x_2)\leq \lambda H_i(x_1)+(1-\lambda)H_i(x_2)$, for all    $\lambda\in[0,1]$, and $x_1, x_2\in\mathcal X$.  For such sets we have the result:
+%A family of parametrically convex sets is defined as follows.
     \begin{thm}\label{thm:convex:parametric:set}
-      The point-to-set map $\mathcal V (x)$ defined in~\eqref{eq:PWA:distrubance:set} is parametrically 
-      convex for all $x\in X.$
+      The point-to-set map $\mathcal V (x)$ defined by~\eqref{eq:PWA:distrubance:set} is parametrically 
+      convex for all $x\in \mathcal X$ if $H(x)$ is elementwise convex in $x\in \mathcal X\subset \mathbb R^n$ (i.e.~if each element $H_i(x)$ of $H(x)$ satisfies
+    $H_i(\lambda x_1+(1-\lambda)x_2)\leq \lambda H_i(x_1)+(1-\lambda)H_i(x_2)$ for all    $\lambda\in[0,1]$ and $x_1, x_2\in\mathcal X$).
     \end{thm}
+    % \begin{thm}\label{thm:convex:parametric:set}
+    %   The point-to-set map $\mathcal V (x)$ defined by~\eqref{eq:PWA:distrubance:set} for a function $H(x)$ that is elementwise convex in $x\in \mathcal X\subset \mathbb R^n$ (i.e.~each element $H_i(x)$ of $H(x)$ satisfies
+    % $H_i(\lambda x_1+(1-\lambda)x_2)\leq \lambda H_i(x_1)+(1-\lambda)H_i(x_2)$ for all    $\lambda\in[0,1]$ and $x_1, x_2\in\mathcal X$) is parametrically 
+    %   convex for all $x\in \mathcal X$.
+    % \end{thm}
 %
     \begin{proof}
       To show that $\mathcal V(\lambda x_1 + (1-\lambda)x_2)\subseteq 
-      \lambda\mathcal V(x_1) \oplus(1-\lambda)\mathcal V(x_2)$ for all $\lambda \in [0,1]$ we note that
+      \lambda\mathcal V(x_1) \oplus(1-\lambda)\mathcal V(x_2)$ for all $\lambda \in [0,1]$ and $x_1, x_2\in\mathcal X$ we note that
         \begin{align*}
         \mathcal V&(\lambda x_1 + (1-\lambda)x_2)\\
         =& \{v:\; G v \leq H(\lambda x_1 + (1-\lambda)x_2)\}\\
@@ -230,137 +238,166 @@ then the \emph{parametric Pontryagin difference} $S\ominus T(S)$ is
     \end{proof} 
 %
 %
-\def\genmat{\Xi} \def\genvec{\xi}Lemmas~\ref{thm:convexity:of:pontryagin:difference} 
-and~\ref{thm:convex:parametric:set} imply that the parametric Pontryagin difference between a convex set $\mathcal X$ and 
-the point-to-set map $\mathcal V(x)$, i.e. $\mathcal X\ominus \mathcal V(\mathcal X)$, is a convex set.
-Furthermore, we will see that if $\mathcal X$ is polyhedral and $\mathcal 
-V(x)$ is point wise polytopic, then $\mathcal X\ominus\mathcal V(\mathcal X)$ is 
-again a polytopic set. This will become more clear in the next section when we describe 
-the computation of the MRPI set~\eqref{eq:definition:MRPI:set:state:dependent}.
+\def\genmat{\Xi} \def\genvec{\xi}
+% Lemmas~\ref{thm:convexity:of:pontryagin:difference} 
+% and~\ref{thm:convex:parametric:set} imply that the parametric Pontryagin difference between a convex set $\mathcal X$ and 
+% the point-to-set map $\mathcal V(x)$, i.e. $\mathcal X\ominus \mathcal V(\mathcal X)$, is a convex set.
+% Furthermore, we will see that if $\mathcal X$ is polytopic and $\mathcal 
+% V(x)$ is pointwise polytopic, then $\mathcal X\ominus\mathcal V(\mathcal X)$ is 
+% again a polytopic set. This will become more clear in the next section when we describe 
+% the computation of the MRPI set~\eqref{eq:definition:MRPI:set:state:dependent}.
+%
+Lemmas~\ref{thm:convexity:of:pontryagin:difference} 
+and~\ref{thm:convex:parametric:set} imply that, if $\mathcal V(x)$ is defined by \eqref{eq:PWA:distrubance:set} in terms of an elementwise convex function $H(x)$, then the parametric Pontryagin difference $\mathcal X\ominus \mathcal V(\mathcal X)$
+is a convex set.
+Furthermore, we will see in the next section that, if $\mathcal X$ is polytopic and $\mathcal 
+V(x)$ is pointwise polytopic, then $\mathcal X\ominus\mathcal V(\mathcal X)$ is 
+again a polytopic set. 
+%This will become more clear in the next section when we describe 
+%the computation of the MRPI set~\eqref{eq:definition:MRPI:set:state:dependent}.
 %
 %
 %
 %
-\section{Maximal Robust Positive Invariant Sets for State Dependent Disturbance}\label{sec:state:dep:MRPI}
+\section{Maximal Robust Positively Invariant Sets for State Dependent Disturbance}\label{sec:state:dep:MRPI}
 In this section we describe an iterative algorithm to compute the MRPI 
 set~\eqref{eq:definition:MRPI:set:state:dependent} for a linear system~\eqref{eq:system:equation} subject to disturbance
-$v\in\mathcal V(x)$ where $\mathcal V(x)$ is defined as in~\eqref{eq:PWA:distrubance:set} with a piecewise affine $H(x)$.
-Notice that the set $\mathcal V(x)$ is pointwise polytopic for finite $x\in\mathcal X_0$ and can hence be represented as the 
+$v\in\mathcal V(x)$ where $\mathcal V(x)$ is a parametrically convex point-to-set map defined by~\eqref{eq:PWA:distrubance:set} with a piecewise affine $H(x)$.
+Notice that the set $\mathcal V(x)$ is pointwise polytopic 
+%\note{is it necessary to assume that $\mathcal V(x)$ is bounded $\forall x\in\mathcal X_0$?}
+for finite $x\in\mathcal X_0$ and can hence be represented as the 
 convex hull of its vertices $\mathcal V(x) = \conv\{v_i(x)\}$. Since ${\mathcal{V}}(x)$
-has a piece-wise affine dependence on $x$ the vertices $v_i(x)$ are also piece-wise affine in $x$.
+has a piecewise affine dependence on $x$ the vertices $v_i(x)$ are also piecewise affine in $x$.
 The set $\mathcal X^\infty$ as defined in~\eqref{eq:definition:MRPI:set:state:dependent} 
-requires to satisfy $\Psi x + v\in\mathcal X^\infty$ for all
+is required to satisfy $\Psi x + v\in\mathcal X^\infty$ for all
 $x\in\mathcal X^\infty$ and $v\in\mathcal V(x)$. To compute the MRPI set we start from the given 
 state constraint set
-$\mathcal X_0 = \{x:\;\genmat_{0,i}x\leq \genvec_{0,i}\,\forall i\in\mathcal I_0\}$ and 
-\emph{cut off} all points that do not satisfy the invariance condition in $k$ steps, $k\in\mathbb N$. 
-So that all points remaining satisfy the invariance condition~\eqref{eq:definition:MRPI:set:state:dependent}. 
-I.e. we iteratively introduce 
-constraints that separate all points for which the successor state can lie outside 
-$\mathcal X_0$. So for the first iteration we need to enforce the constraint:
+\[
+\mathcal X_0 = \{x:\;\genmat_{0,i}x\leq \genvec_{0,i}\,\forall i\in\mathcal I_0\}
+\]
+and
+recursively \emph{cut off} points that cannot satisfy the invariance condition~\eqref{eq:definition:MRPI:set:state:dependent}
+%\emph{cut off} all points that do not satisfy the invariance condition in $k$ steps, $k\in\mathbb N$. 
+%So that all points remaining satisfy the invariance condition~\eqref{eq:definition:MRPI:set:state:dependent}
+by iteratively introducing
+constraints that exclude all points for which the successor state can lie outside 
+$\mathcal X_0$. The first iteration enforces the constraint:
 %
-\begin{equation}\begin{split}
+\[%\begin{equation}
+\begin{split}
 	&\genmat_{0,i}(\Psi x + v)\overset{!}{\leq}\genvec_{0,i}\;\forall v\in\conv\{v_i(x)\}\\
 	&\genmat_{0,i}\Psi x + \max_{v\in\mathcal V(x)} \genmat_{0,i} v \leq \genvec_{0,i}\\
-	&\genmat_{0,i}\Psi x + \underbrace{\max_{j} \genmat_{0,i} v_j(x)}_{v_{0,i}^\ast(x)} \leq \genvec_{0,i}.
-\end{split}\end{equation}
+	&\genmat_{0,i}\Psi x + \underbrace{\max_{j} \genmat_{0,i} v_j(x)}_{=v_{0,i}^\ast(x)} \leq \genvec_{0,i}.
+\end{split}
+\]%\end{equation}
 %
-to each inequality.
-Notice that $v_{0,i}^\ast(x)$ is not necessarily given by one unique maximiser, 
+for each $i\in \mathcal I_0$.
+Notice that $v_{0,i}^\ast(x)$ is not necessarily given by a unique maximiser, 
 but is the solution of a multiparametric linear program and hence will be given 
 by a vertex $v_i(x)$ of $\mathcal V(x)$ for each $x$ on that facet.
-Since each vertex is a piece-wise affine function of $x$ the maximum $v_{0,i}^\ast(x)$ will also
+Since each vertex is a piece-wise affine function of $x$, the maximum $v_{0,i}^\ast(x)$ will also
 be piece-wise affine
 and therefore the set $\mathcal X_1=\mathcal X_0 \cap \{x:\genmat_{0,i}\Psi x + v_{0,i}^\ast(x) \leq 
 \genvec_{0,i}\forall i\in\mathcal I_0\}$
 has the representation $\mathcal X_1 = \{x:\genmat_{1,i}x\leq\genvec_{1,i}\,\forall i\in\mathcal I_1\}$.
 The next iterate is defined by
 %
-\begin{multline}
+\begin{multline*}
 	\mathcal X_2 = \mathcal X_1 \cap \\ \{x:\genmat_{0,i}\Psi(\Psi x + v) + v_{0,i}^\ast(x)\leq\genvec_{0,i}\,
 	\forall i\in\mathcal I_0,v\in\mathcal V(x)\}\\
 	= \mathcal X_1 \cap \{x: \genmat_{0,i}\Psi^2 x + v_{1,i}^\ast(x) + v_{0,i}^\ast(x)\leq\genvec_{0,i}\,\forall 
-	i\in\mathcal I_0\}.
-\end{multline}
+	i\in\mathcal I_0\},
+\end{multline*}
 %
-And we analogously define
+and after $(k+1)$ iterations we have
 %
-\begin{equation}
+\[%\begin{equation}
 	\mathcal X_{k+1} = \mathcal X_k\cap \{x:\genmat_{0,i}\Psi^k x + \sum_{l=0}^{k-1}v_{l,i}^\ast(x)
 	\leq\genvec_{0,i}\,\forall i\in\mathcal I_0\},
-\end{equation}
+\]%\end{equation}
 %
-where we have 
+where 
 %
-\begin{multline}
-	v_{l,i}^\ast(x)=\max_j \genmat_{0,i}\Psi^{l-1}v_j(x)\\
-	 = \begin{array}{rl} \max& \genmat_{0,i}\Psi^{l-1}v \\ \text{s.t.}& v\in\mathcal V(x)\end{array}
-	 = \begin{array}{rl} \max& \genmat_{0,i}\tilde v\\ \text{s.t.}& \tilde v\in \Psi^{l-1}\mathcal V(x) \end{array}
-\end{multline}
+%\begin{equation}
+\begin{align*}
+	v_{l,i}^\ast(x)&=\max_j \ \genmat_{0,i}\Psi^{l-1}v_j(x)
+	 = \begin{array}[t]{rl} \max& \genmat_{0,i}\Psi^{l-1}v \\ \text{s.t.}& v\in\mathcal V(x)\end{array} \\
+	 &= \begin{array}[t]{rl} \max& \genmat_{0,i}\tilde v\\ \text{s.t.}& \tilde v\in \Psi^{l-1}\mathcal V(x) \end{array}
+\end{align*}
+%\end{equation}
 %
-In a closed form the iterates can be expressed as
+In closed form the iterates can be expressed as
 %
 \begin{equation}\label{eq:set:iteration:state:dependent:constraints}
 \begin{split}
 	\mathcal X_{k+1} =& \mathcal X_k\cap\left(\Psi^{-1}\mathcal X_k \ominus \Psi^{k-1}\mathcal V(\mathcal X_k)\right)
 	=\mathcal X_k\cap D_k \\
-	=& \bigcap_{l\leq k+1}\left( \Psi^{-l} \mathcal X_0 \underset{i\leq l-1}{\bigominus} \Psi^i \mathcal V(\mathcal X_{l-1})\right).
+	=& \bigcap_{0\leq l\leq k+1}\left( \Psi^{-l} \mathcal X_0 \underset{i\leq l-1}{\bigominus} \Psi^i \mathcal V(\mathcal X_{l-1})\right).
 \end{split}\end{equation}
 %
 We will use~\eqref{eq:set:iteration:state:dependent:constraints} to prove the finite determinability of
 $\mathcal X^\infty$, i.e. that there exists a finite number $N$ such that $x\in\mathcal X_N$ implies
-$\Psi x + v \in\mathcal X_N$ for all $v\in\mathcal V(x)$ and the set therefore is robustly positive invariant.
+$\Psi x + v \in\mathcal X_N$ for all $v\in\mathcal V(x)$ and therefore $\mathcal X_N$ is robustly positively invariant.
 %
 \begin{thm}\label{thm:finite:MRPI:set:state:dependable}
-Let the system constraints be contained in a band $\mathcal X_0\subseteq B=\{x:\Gamma x\leq{\bf{1}}\wedge 
+Let the state constraint set $\mathcal X_0$ be contained in a band: $\mathcal X_0\subseteq B=\{x:\Gamma x\leq{\bf{1}}\wedge 
 -\Gamma x\leq{\bf{1}}\}$, let the pair $(\Psi,\Gamma)$ be observable and let $\mathcal V(x)$ be defined by~\eqref{eq:PWA:distrubance:set}
-with a piecewise affine $H$, 
-then $\mathcal X_N\subseteq \mathcal X_{N+1}$ for a finite $N$. Hence the MRPI set $\mathcal X^\infty 
+with a piecewise affine $H(x)$, 
+then $\mathcal X_N\subseteq \mathcal X_{N+1}$ for a finite $N$, and hence the MRPI set $\mathcal X^\infty 
 =\mathcal X_N$ is a polytope.
 \end{thm}
 %
 \begin{proof}
-Notice that with~\eqref{eq:set:iteration:state:dependent:constraints} it is easy to see that in early
-iterations the parametric Pontryagin difference can yield the empty set. The empty set however is
-an admissible polytope, i.e. an admissible MRPI set. For the remainder of this proof we assume
-that the MRPI set is non-empty. For this notice that on any compact set $\mathcal S\subset\mathbb R^n$ we
-have $\bigcup_{s\in\mathcal S}\mathcal V(s)$ is compact.
+From~\eqref{eq:set:iteration:state:dependent:constraints} it is clear that $\mathcal X^\infty = \emptyset$ if $\mathcal X_k =\emptyset$ for any $k\geq 0$.
+%Notice that with~\eqref{eq:set:iteration:state:dependent:constraints} it is easy to see that in early iterations the parametric Pontryagin difference can yield the empty set. The empty set however is an admissible polytope, i.e. an admissible MRPI set. 
+For the remainder of the proof we assume
+that the MRPI set $\mathcal X^\infty$ is non-empty. For this we require that $\bigcup_{s\in\mathcal S}\mathcal V(s)$ is compact on any compact set $\mathcal S\subset\mathbb R^n$.
 
-The proof has two main steps: First we will prove that $\mathcal X_p$ is compact for $p\leq n$
-where $n$ is the state dimension. The second step is to prove that in~\eqref{eq:set:iteration:state:dependent:constraints}
+The proof has two main steps: First we prove that $\mathcal X_p$ is compact for $p\leq n$
+where $n$ is the dimension of the state $x$. The second step is to prove that in~\eqref{eq:set:iteration:state:dependent:constraints}
 the set $D_k$ grows exponentially, i.e. that for any given compact set $\mathcal C$ there exists
-a $\tilde N$ such that $\mathcal C\subseteq D_{\tilde N}$. The proof is concluded by setting 
-$\mathcal C = \mathcal X_p$ and using $N = \tilde N$. For the first step, notice that the observability of
-$(\Psi,\Gamma)$ is equivalent to the observability matrix $\Omega$ having full rank, i.e.
+finite $\tilde N$ such that $\mathcal C\subseteq D_{\tilde N}$. The proof is concluded by setting 
+$\mathcal C = \mathcal X_{\tilde N}$ and deducing that $N = \tilde N$. 
+
+For the first step, notice that observability of
+$(\Psi,\Gamma)$ is equivalent to the observability matrix $\Omega$ having full rank, i.e.\ $\mathrm{rank}(\Omega) = \mathrm{rank}(\begin{bmatrix} \Gamma^T \ \cdots \ (\Gamma\Psi^{n-1})^T\end{bmatrix}) = n$.
+% \[
+% \Omega = \left(\begin{array}{c}
+% \Gamma\\ \vdots \\ \Gamma\Psi^{n-1}
+% \end{array}\right)
+% \]
+%having a trivial kernel. 
+But  this implies that the set 
 \[
-\Omega = \left(\begin{array}{c}
-\Gamma\\ \vdots \\ \Gamma\Psi^{n-1}
-\end{array}\right)
+\mathcal P_{n} = \{x: 
+\Omega x\leq{\bf{1}}\wedge-\Omega x\leq{\bf{1}}\} = \bigcap_{0\leq l\leq n-1} \Psi^{-l} B
 \]
-having a trivial kernel. But this then implies that the set $\mathcal P_{n+1} = \{x: 
-\Omega x\leq{\bf{1}}\wedge-\Omega x\leq{\bf{1}}\} = \bigcap_{l\leq n+1} \Psi^{-l} B$ is bounded.
-Notice that the containment $\mathcal X_k\subseteq \mathcal P_k$ holds for all $k$ and hence
-the set $\mathcal X_{n+1}$ is also bounded. The case that $\tilde N<n$ occurs when $\Gamma$
-has more than rank one. To see that $D_k$ grows exponentially we use that $\mathcal V(\mathcal X_{n+1})$
-is bounded, let $K_1$ denote the smallest ball that contains $\mathcal V(\mathcal X_{n+1})$ and let
-$\bar\lambda$ denote the magnitude of the largest eigenvalue of $\Psi$. Furthermore, let $K_1$
+is bounded, and since $\mathcal X_k\subseteq \mathcal P_k$ for all $k$, 
+the set $\mathcal X_{n}$ is also bounded. The case that $\tilde N<n$ can occur if $\mathrm{rank}(\Gamma) > 1$.
+%has more than rank one. 
+More generally, to show that $D_k$ grows exponentially we use the boundedness of $\mathcal V(\mathcal X_{n})$. Let $K_1$ denote the smallest ball that contains $\mathcal V(\mathcal X_{n})$ and let
+$\bar\lambda$ denote the magnitude of the largest eigenvalue of $\Psi$. Furthermore, let $K_2$
 be the biggest ball that is contained in $\mathcal X_{0}$. $D_k$ has the representation
 \begin{equation}
-D_k = \underbrace{\Psi^{-k}\mathcal X_0}_{(i)} \ominus \underbrace{\left(\bigoplus_{i\leq k-1} 
-\Psi^i\mathcal V(\mathcal X_k)\right)}_{(ii)}.
+D_k = \underbrace{\Psi^{-k}\mathcal X_0}_{=\mathcal S_1} \ominus \underbrace{\left(\bigoplus_{i\leq k-1} 
+\Psi^i\mathcal V(\mathcal X_k)\right)}_{=\mathcal S_2}.
 \end{equation}
-Since $\Psi$ is asymptotically stable we know that $\bar\lambda<1$ and so we have 
-$\bar\lambda^{-l}K_1\subseteq\Psi^{-l} K_1 \subseteq \Psi^{-l}\mathcal X_0 = (i)$
-which implies exponential growth of $D_k$ as long as $(ii)$ is bounded. Recall that we assume
-that the MRPI set is non-empty.
-Hence, to bound $(ii)$ we use $k\geq n+1$ where $(ii)\subseteq \oplus_{i\leq k-1} \bar\lambda^i K_2 \subseteq
-\frac{1}{1-\bar\lambda} K_2$ holds. This concludes the proof: We proved that $D_k$ grows exponentially,
-that it contains an exponentially growing ball. We proved that the subtrahend is bounded inside a ball of
-finite radius, and hence we conclude that after a finite number of iterations $N$ intersecting with $D_{N+1}$
-will no longer change $\mathcal X_N$.
+Since $\Psi$ is asymptotically stable we have $\bar\lambda<1$ and therefore
+$\bar\lambda^{-l}K_1\subseteq\Psi^{-l} K_1 \subseteq \Psi^{-l}\mathcal X_0 = \mathcal S_1$,
+implying exponential growth of $D_k$ provided $\mathcal S_2$ is bounded. 
+%Recall that we assume
+%However the MRPI set is non-empty by assumption, and t
+To bound $\mathcal S_2$ we note that $\mathcal S_2\subseteq \oplus_{i\leq k-1} \bar\lambda^i K_2 \subseteq
+\frac{1}{1-\bar\lambda} K_2$ holds for $k\geq n$. This concludes the proof since $D_k$ grows exponentially,
+%as it contains an exponentially growing ball. We proved that 
+whereas $\mathcal X_k$ is contained in a ball of
+finite radius, and hence we conclude from \eqref{eq:set:iteration:state:dependent:constraints} that 
+$\mathcal X_{k+1} = \mathcal X _k$ for all $k\geq N$ and therefore $\mathcal X _N = \mathcal X^\infty$ for finite $N$.
+%after a finite number of iterations $N$ intersecting with $D_{N+1}$
+%will no longer change $\mathcal X_N$.
 \end{proof}
 %
-We have seen that we can compute a the maximal robust positive invariant set $\mathcal X^\infty$ for linear 
+We have seen that we can compute a the maximal robust positively invariant set $\mathcal X^\infty$ for linear 
 systems with state dependent constraints. In the next section we will illustrate the concept with an 
 example.
 %
@@ -506,7 +543,7 @@ The algorithm terminates after 3 iterations.
 \lbl{0,55,90; $\tilde x_2$}
 }
 \end{lpic}
-\caption{The maximal robust positive invariant set for the levitating ball system.}
+\caption{The maximal robust positively invariant set for the levitating ball system.}
 \label{fig:MRPI:set:levitating:ball}
 \end{figure}
 %
@@ -514,7 +551,7 @@ The algorithm terminates after 3 iterations.
 %
 %
 %
-\section{Maximal Robust Positive Invariant Sets for Parametrised Disturbance}\label{sec:MRPI:parametrised}
+\section{Maximal Robust Positively Invariant Sets for Parametrised Disturbance}\label{sec:MRPI:parametrised}
 %
 %
 In this section we describe the computation of the MRPI set for~\eqref{eq:system:equation}
