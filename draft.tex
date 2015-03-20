@@ -379,8 +379,8 @@ To show that $D_k$ grows exponentially we use the compactness of $\mathcal V(\ma
 $\rho$ denote the spectral radius of $\Psi$. Furthermore, let $K_2$
 be the biggest ball that is contained in $\mathcal X_{0}$. From~\eqref{eq:set:iteration:state:dependent:constraints}, $D_k$ has the representation
 \begin{equation}
-D_k = \underbrace{\Psi^{-k}\mathcal X_0}_{=\mathcal S_1} \ominus \underbrace{\left(\bigoplus_{i\leq k-1} 
-\Psi^i\mathcal V(\mathcal X_k)\right)}_{=\mathcal S_2}.
+D_k = \underbrace{\Psi^{-k}\mathcal X_0}_{=\mathcal S_1} \ominus \underbrace{\biggl(\bigoplus_{i\leq k-1} 
+\Psi^i\mathcal V(\mathcal X_k)\biggr)}_{=\mathcal S_2}.
 \end{equation}
 Since $\Psi$ is asymptotically stable we have $\rho<1$ and therefore
 $\rho^{-l}K_1\subseteq\Psi^{-l} K_1 \subseteq \Psi^{-l}\mathcal X_0 = \mathcal S_1$,
@@ -431,71 +431,93 @@ In this section we discuss the calculation of the MRPI set for a linearised simp
 by $m \ddot y = m g - c\frac{i^2}{y^2}$, where $m,g,c,i$ and $y$ denote the mass of the ball, the gravitational
 constant, a constant factor, the current and the distance between the coil and the centre of the ball respectively.
 For illustration purposes we neglect inductive dynamics and use the current $u=i$ as an input and the position
-$y$ and its first derivative $\dot y$ as the states, i.e. $x = (y,\dot y)^T$. We find that an equilibrium
-is present when $x_2=0$ and $u=\sqrt{\frac{gm}{c}}x_1$ for any positive position $x_1>0$.
-Linearising the nonlinear differential equation $\dot x = f(x,u)$ around $\hat x, \hat u$ we obtain the linear approximation
+$y$ and its first derivative $\dot y$ as the states, i.e. $x = (y,\dot
+y)^T$. We find that any equilibrium has $\dot{y}=0$ and
+$u=\sqrt{\frac{gm}{c}} y$ for any positive position $y>0$.
+Linearising the nonlinear differential equation $\dot x = f(x,u)$
+around an equilibrium point $(\hat x, \hat u)$ 
+%such that $f(\hat x,\hat u) = 0$, 
+gives the approximate model 
 %
 \begin{equation}
-	\Delta \dot x = \underbrace{\left(\begin{array}{cc}
+	 \dot{\tilde{x}} \approx \underbrace{\left(\begin{array}{cc}
 	0 & 1 \\ \frac{2c\hat u^2}{m\hat x_1^3} & 0
-	\end{array}\right)}_{\frac{\partial f}{\partial x}(\hat x,\hat u)}\Delta x + \underbrace{\left(\begin{array}{c}
+	\end{array}\right)}_{\frac{\partial f}{\partial x}(\hat x,\hat
+      u)}\tilde x 
++ \underbrace{\left(\begin{array}{c}
 	0 \\ - \frac{2c\hat u}{m\hat x_1^2}
-	\end{array}\right)}_{\frac{\partial f}{\partial u}(\hat x,\hat u)}\Delta u.
+	\end{array}\right)}_{\frac{\partial f}{\partial u}(\hat x,\hat
+      u)}\tilde u
 \end{equation}
 %
-We derive discrete time system dynamics using the explicit Euler formula $x^+=x+T_s f(x,u) =:\tilde f(x,u)$,
-with the sampling rate $T_s$. Hence we define the system matrix $A = (I+T_s\frac{\partial f}{\partial x}(\hat x,\hat u))$
-and the input matrix $B = T_s \frac{\partial f}{\partial u}(\hat x,\hat u)$. 
-Notice that using a non-autonomous model does not affect our analysis since we analyse the closed loop system
-governed by a linear state feedback controller $u=Kx$. We choose $K$ as the solution of the robust Lyapunov condition $V(x)-V((A+BK)x+Dw)\leq \gamma^2w^Tw$ with $V(x)=x^T P x\geq0$, i.e.
-$x^TPx - ((A+BK)x+Dw)^TP((A+BK)x+Dw)\geq x^T(Q+K^TRK)x -\gamma^2 w^Tw$ for a minimised $\gamma^2$, 
-see e.g.~\cite{Boyd:94}.
-A representation of additive disturbances that act on the state of the linearised model as a result of the linearisation error can be obtained using the mean-value theorem for vector valued functions (e.g.~\cite{Apostol:1974}):
+where $\tilde{x} = x-\hat{x}$, $\tilde{u} = u -\hat{u}$.
+We derive the discrete time dynamics with sampling rate $T_s$ using
+the Euler formula $x^+=x+T_s f(x,u) =:\tilde f(x,u)$ giving
+\[
+\tilde{x}^+ \approx A \tilde{x} + B \tilde{u}, \quad
+\Biggl\{\begin{aligned} A &= I+T_s\frac{\partial f}{\partial  x}(\hat
+  x,\hat u) \\
+B &= T_s \frac{\partial f}{\partial u}(\hat x,\hat u)
+\end{aligned}
+\]
+Although this system has a control input, the algorithm for computing the
+MRPI set is applicable since we consider the closed loop system under
+linear feedback  $u=Kx$, where $K$ satisfies the robust Lyapunov condition $V(x)-V((A+BK)x+Dw)\leq \gamma^2w^Tw$ with $V(x)=x^T P x\geq0$, i.e.
+$x^TPx - ((A+BK)x+Dw)^TP((A+BK)x+Dw)\geq x^T(Q+K^TRK)x -\gamma^2 w^Tw$
+for a minimum  $\gamma^2$, see e.g.~\cite{Boyd:94}.
+A representation of disturbances acting on the linearised
+model due to linearisation errors can be obtained using the
+Mean Value Theorem for vector-valued functions (e.g.~\cite{Apostol:1974}).
 %
 %
 \begin{thm}[Mean Value Theorem]\label{thm:mean:value:theorem}
-Let $\mathcal X\subset\mathbb R^n$ be open, $g : \mathcal X \rightarrow\mathbb R^m$ continuously differentiable, 
-and $x \in\mathcal X, h \in\mathbb R^n$ vectors such that the 
-whole line segment $x + th$ remains in $\mathcal X$ for $0 \leq t \leq 1$. Then
+Let $g : \mathcal X \rightarrow\mathbb R^m$ be continuously
+differentiable, $\mathcal X\subset\mathbb R^n$ be open,
+and $x \in\mathcal X$, $h \in\mathbb R^n$ be such that 
+$x + th \in\mathcal X$ for all $t\in [0 ,1]$. Then
 \begin{equation}
 	g(x+h) = g(x) + \left(\int_0^1 \frac{\partial g}{\partial x}(x+th)dt\right)\cdot h.
 \end{equation}
 \end{thm}
 %
 %
-Using the Mean Value Theorem~\ref{thm:mean:value:theorem}
-and the linearisation for $\Delta x = \hat x + \tilde x$ and $\Delta u = \hat u + \tilde u$ we
-get the successor state:
+Using the Mean Value Theorem
+and the linearisation around $(\hat{x},\hat{u})$, we obtain the successor state:
 %
-\begin{equation}
-	\begin{split}
-	\Delta x^+ = \underbrace{\tilde f(\hat x, \hat u)}_{\hat x} + \int_0^1\frac{\partial\tilde 
-	f}{\partial x}(\hat x + t\tilde x
-	,\hat u + t\tilde u)dt\cdot \tilde x +\\
-	 \int_0^1\frac{\partial\tilde f}{\partial u}(\hat x + t\tilde x
-	,\hat u + t\tilde u)dt\cdot \tilde u + A \tilde x + B \tilde u - A \tilde x - B\tilde u\\
-	\Leftrightarrow \tilde x^+ = A\tilde x + B \tilde x +\left(
-	\int_0^1\frac{\partial\tilde f}{\partial x}(\hat x + t\tilde x,\hat u + t\tilde u)dt - A
-	\right)\tilde x + \\ \left(
-	\int_0^1\frac{\partial\tilde f}{\partial u}(\hat x + t\tilde x,\hat u + t\tilde u)dt - B
-	\right)\tilde u
-	\end{split}
-\end{equation}
+\begin{align*}
+x^+ &= \tilde{f}(\hat{x} + \tilde{x},\hat{u} + \tilde{u}) 
+\\
+&= \tilde f(\hat x, \hat u) 
++ \int_0^1\frac{\partial\tilde f}{\partial x}(\hat x + t\tilde x,
+\hat u + t\tilde u) dt \cdot \tilde x  \\
+&\quad + \int_0^1\frac{\partial\tilde f}{\partial u}(\hat x + t\tilde x,\hat u+
+t\tilde u) dt\cdot \tilde u \\
+%+ A \tilde x + B \tilde u - A \tilde x - B\tilde u\\
+\Leftrightarrow 
+\tilde x^+ &= A\tilde{x} + B \tilde{u} +\Bigl(
+\int_0^1\frac{\partial\tilde f}{\partial x}(\hat x + t\tilde x,\hat u
+             + t\tilde u)dt - A \Bigr)\tilde x 
+\\ 
+&\quad +\Bigl(\int_0^1\frac{\partial\tilde f}{\partial u}(\hat x + t\tilde x,\hat u + t\tilde u)dt - B\Bigr)\tilde u
+\end{align*}
 %
-Thus for any state $\tilde x=\Delta x - \hat{x}$ we obtain the (exact) dynamics
-$\tilde x^+ = A\tilde x+B\tilde u + H^x\tilde x + H^u \tilde u$, however the computation
-of $H^x$ and $H^u$ requires solving a nonlinear integral. Suppose that
+This implies the dynamics
+\[
+\tilde x^+ = A\tilde x+B\tilde u + H^x\tilde x + H^u \tilde u, 
+\]
+where
+$H^x$ and $H^u$ can be determined by integration. Suppose that
 for $x\in\mathcal X$ and $u\in\mathcal U$, where $\mathcal X$ and $\mathcal U$ are compact
-sets, we have extremal values of $H^x$ and $H^u$, i.e.
+sets, the values of $H^x$ and $H^u$ are known, i.e.\
 $H^x\tilde x+H^u\tilde u\in\conv_k\{H^x_k\tilde x + H^u_k\tilde u\}$ for all $(\tilde x,\tilde u)\in\mathcal X\times \mathcal U$.
 Clearly, we can then introduce the element\-wise disturbance bound 
 %
-\begin{equation}\label{eq:definition:element:wise:constraints:on:nonlinearities}
-\begin{split}
-\mathcal V(x,u)=\left\{v:\min_k\{
-H^x_{k,i}x+H^u_{k,i}u\}\leq v_i\,\wedge\right. \\ \left.v_i \leq \max_k\{H^x_{k,i}x+H^u_{k,i}u\}, \, i =1,\dots,n\right\}.
-\end{split}
-\end{equation}
+\begin{multline}\label{eq:definition:element:wise:constraints:on:nonlinearities}
+\mathcal V(x,u)=\biggl\{v:\min_k\{
+H^x_{k,i}x+H^u_{k,i}u\}\leq v_i\,\wedge 
+\\ 
+v_i \leq \max_k\{H^x_{k,i}x+H^u_{k,i}u\}, \, i =1,\dots,n\biggr\}.
+\end{multline}
 %
 With this set we can
 guarantee that $\tilde x^+ = A\tilde x + B\tilde u + v$ accounts for all nonlinearities within $\mathcal X
