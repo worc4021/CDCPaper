@@ -109,7 +109,7 @@ parameters. First we consider state-dependent sets,
 \end{equation}
 where $G$ is a real matrix,
 %$G\in\mathbb R^{n_G\times n_v}$, 
-$H(x)$ is a convex piecewise affine function, and the inequality applies elementwise. For the case that $\mathscr V=\mathcal V(x)$ we
+$H(x)$ is a piecewise affine function, and the inequality applies elementwise. For the case that $\mathscr V=\mathcal V(x)$ we
 provide conditions for convexity and finite determination of $\mathcal X^\infty$ and discuss 
 computation of $\mathcal X^\infty$. The case of disturbances depending on states (or control inputs) 
 is considered in~\cite{Kuntsevich:1995,rakovic06} but the convexity
@@ -796,9 +796,9 @@ Although non-positivity of $\mathcal H$ implies non-positivity of $\Lambda^\alph
 % We know $\mathcal G$ and hence we know that most entries are zero, so that $\Lambda^\theta$ has positive entries.
 Let $(\Lambda^1,\lambda^1)$ and $(\Lambda^2,\lambda^2)$ denote all rows of $\Lambda^\theta$ such that $\Lambda^{1,\theta}>0$ and
 $\Lambda^{2,\theta}\leq0$. This implies that for any fixed $\hat\alpha$ the set $\mathcal Z^\infty\vert_{\hat\alpha}$
-is compact, and since $\mathcal Z^\infty\vert_{(\hat\alpha,\hat\theta)}$
-is compact, there exist a maximal $\theta_{\max}$ and likewise a minimal $\theta_{\min}$
-such that $\Lambda^{1,x}x+\Lambda^{1,\alpha}\hat\alpha+\Lambda^{1,\theta}\theta\leq\lambda^1$ can be satisfied. We can solve the optimisation programs
+is compact, since $\mathcal Z^\infty\vert_{(\hat\alpha,\hat\theta)}$ is compact and there exists a maximal $\theta_{\max}$
+such that $\Lambda^{1,x}x+\Lambda^{1,\alpha}\hat\alpha+\Lambda^{1,\theta}\theta\leq\lambda^1$ can be satisfied
+analogue there is a minimal $\theta_{\min}$. We can solve the optimisation programs
 $$
 	\gamma_i = \begin{array}[t]{rl}
 	\displaystyle\max_x& \Lambda^{1,x}x\\
