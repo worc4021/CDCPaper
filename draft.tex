@@ -67,6 +67,7 @@
 \end{abstract}
 
 \begin{keywords}
+constrained control, positively invariant sets, robust control
 \vskip-\baselineskip
 \end{keywords}
 
@@ -443,7 +444,6 @@ MRPI set is applicable since we consider the closed loop system under
 linear feedback  $u=Kx$, where $K$ satisfies the robust Lyapunov condition $V(x)-V((A+BK)x+v)\leq \gamma^2v^Tv$ 
 with $V(x)=x^T P x\geq0$, i.e. $x^TPx - ((A+BK)x+v)^TP((A+BK)x+v)\geq x^T(Q+K^TRK)x -\gamma^2 v^Tv$
 for a minimum  $\gamma^2$, see e.g.~\cite{Boyd:94}.
-\note{What is $w$ here?}
 A representation of additive disturbances acting on the linearised
 model due to linearisation errors, i.e. a system representation $x^+=Ax + Bu + v$ with an additive disturbance $v$, can be obtained using the
 Mean Value Theorem for vector-valued functions (e.g.~\cite{Apostol:1974}).
@@ -493,9 +493,6 @@ $\mathcal X$ and $\mathcal U$ are compact sets, $f(x,u)$ is
 continuously differentiable. Then
 we can bound the values of $H^x \tilde{x}+ H^u \tilde{u}$ by a finite convex combination of extremal values, i.e. 
 $H^x \tilde{x}+H^u \tilde{u}\in\conv_k\{H^x_k \tilde{x} + H^u_k \tilde{u}\}$.
-\note{I did't like this passage. It made it seem obvious that the nonlinearities are contained in a polytope spanned by
-extremal values.. That's obviously not the case.. [We can assume this
-if $f$ is continuously differentiable]}
 Clearly, we can then introduce the element\-wise disturbance bound 
 %
 \begin{multline}\label{eq:definition:element:wise:constraints:on:nonlinearities}
@@ -510,7 +507,10 @@ guarantee that $\tilde x^+ = A\tilde x + B\tilde u + v$ accounts for all nonline
 \times\mathcal U$ if we constrain $v\in\mathcal V(\tilde x,\tilde u)$. For general nonlinear systems
 finding the extremal values of $(H^x,H^u)$ cannot be done easily.
 To obtain values for $(H^x_k,H^u_k)$ we sample $\mathcal X\times\mathcal U$ and evaluate the integral 
-expressions defining $(H^x_k,H^u_k)$ pointwise. For this we use the numerical values for the example of the 
+expressions defining $(H^x_k,H^u_k)$ pointwise.
+This leads to an inner approximation of the linearisation error set, however we can make it as tight as necessary
+by increasing the number of samples.
+For this we use the numerical values for the example of the 
 levitating ball: $Ts=30ms, C=1, m=100g, \hat x_1 = 50mm$ and $\mathcal X=\{x:
 \abs{x_1- \hat x_1}\leq 1mm\wedge \abs{x_2}\leq 105\frac{mm}{s}\}$, $\mathcal U=\{u:\abs{ u-\hat u}\leq10mA\}$.
 Using a total of 25 samples for the computation of $(H^x,H^u)$ we obtain the invariant set shown in figure~\ref{fig:MRPI:set:levitating:ball},
@@ -802,12 +802,8 @@ $$
 	\max_i \  \frac{-\Lambda_i^\alpha}{\norm{\Lambda_i^x}_2}.
 $$
 %
-For this example the greatest sensitivity corresponds to $\alpha_3$ with a numerical value of $2.6458\times 10^9$, 
+For this example the greatest sensitivity corresponds to $\alpha_3$, 
 i.e. the third input constraint.
-\note{I actually have no idea what the numerical value means. It sort of tells us that at least one constraint depending on $\alpha_3$
-is highly sensitive. The actual numerical value could also imply that it is a constraint on $\alpha_3$ which has some residual dependence on
-$\alpha_3$ and is blown up by normalising. [some comment is needed in
-the text]}
 Similarly to the first example we might also want to know how much disturbance the closed loop system can tolerate 
 such that a given set is contained in the MRPI set $\mathcal C\subseteq\mathcal Z^\infty\vert_{(\theta,0)}$.
 Although non-positivity of $\mathcal H$ implies non-positivity of $\Lambda^\alpha$, a similar argument cannot be applied to $\Lambda^\theta$.
