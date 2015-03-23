@@ -315,7 +315,9 @@ where
 In closed form the iterates can be expressed as
 \note{We actually do NOT assume that $\Psi$ is invertible! We don't need its inverse at any point! $\Psi^{-1}$ appears only
 in this closed form representation but it merely denotes the preimage of $\mathcal X_k$ because that is all we need that the preimages
-keep growing. It might be confusing with the notation but that is only to emphasise that it behaves like the inverse..}
+keep growing. It might be confusing with the notation but that is only
+to emphasise that it behaves like the inverse [change notation, e.g.
+$\Psi^\dagger$?]}
 %
 \begin{equation}\label{eq:set:iteration:state:dependent:constraints}
 \begin{split}
@@ -351,7 +353,7 @@ $\mathcal C = \mathcal X_{N}$ and deducing that $\mathcal X^\infty = \mathcal X_
 For the first step, notice that observability of $(\Psi,\Gamma)$ is equivalent to the observability matrix 
 $\Omega$ having full rank, i.e.\ $\mathrm{rank}(\Omega) = \mathrm{rank}(\begin{bmatrix} \Gamma^T \ \cdots \ 
 (\Gamma\Psi^{n-1})^T\end{bmatrix}) = n$.
-\note{This looks very MATLAB.. I don't like it.}
+\note{This looks very MATLAB.. I don't like it [saves space]}
 But  this implies that the set 
 %
 \[
@@ -416,26 +418,28 @@ constant, a constant factor, the current and the distance between the coil and t
 For illustration purposes we neglect inductive dynamics and use the current $u=i$ as an input and the position
 $y$ and its first derivative $\dot y$ as the states, i.e. $x = (y,\dot y)^T$. We find that any equilibrium has 
 $\dot{y}=0$ and $u=\sqrt{\frac{gm}{c}} y$ for any positive position $y>0$. Linearising the nonlinear differential 
-equation $\dot x = f(x,u)$ around an equilibrium point $(\hat x, \hat u)$ gives the approximate model 
+equation $\dot x = f(x,u)$ around an equilibrium point $(\hat x, \hat
+u)$ gives the approximate linear model 
 %
 \begin{equation}
-	 \dot{\tilde{x}} \approx \underbrace{\left(\begin{array}{cc}
+	 \Delta\dot{x} = \underbrace{\left(\begin{array}{cc}
 	0 & 1 \\ \frac{2c\hat u^2}{m\hat x_1^3} & 0
 	\end{array}\right)}_{\frac{\partial f}{\partial x}(\hat x,\hat
-      u)}\tilde x 
+      u)}\Delta x 
 + \underbrace{\left(\begin{array}{c}
 	0 \\ - \frac{2c\hat u}{m\hat x_1^2}
 	\end{array}\right)}_{\frac{\partial f}{\partial u}(\hat x,\hat
-      u)}\tilde u
+      u)}\Delta u
 \end{equation}
 %
-\note{I find the $x^+\approx Ax+Bu$ notation very misleading! I prefer $=$ since we 
-will take it as an equality after all not handling discretisation errors at all..}
-where $\tilde{x} = x-\hat{x}$, $\tilde{u} = u -\hat{u}$.
+\note{I find the $x^+\approx Ax+Bu$ notation very misleading! I prefer
+  $=$ since we will take it as an equality after all not handling
+  discretisation errors at all.. [OK - agreed]}
+where $\Delta u = u -\hat{u}$ and $\Delta x \approx x-\hat{x}$.
 We derive the discrete time dynamics with sampling rate $T_s$ using
 the Euler formula $x^+=x+T_s f(x,u) =:\tilde f(x,u)$ giving
 \[
-\tilde{x}^+ \approx A \tilde{x} + B \tilde{u}, \quad
+\Delta x^+ = A \Delta x + B \Delta u , \quad
 \Biggl\{\begin{aligned} A &= I+T_s\frac{\partial f}{\partial  x}(\hat
   x,\hat u) \\
 B &= T_s \frac{\partial f}{\partial u}(\hat x,\hat u)
@@ -446,6 +450,7 @@ MRPI set is applicable since we consider the closed loop system under
 linear feedback  $u=Kx$, where $K$ satisfies the robust Lyapunov condition $V(x)-V((A+BK)x+Dw)\leq \gamma^2w^Tw$ 
 with $V(x)=x^T P x\geq0$, i.e. $x^TPx - ((A+BK)x+Dw)^TP((A+BK)x+Dw)\geq x^T(Q+K^TRK)x -\gamma^2 w^Tw$
 for a minimum  $\gamma^2$, see e.g.~\cite{Boyd:94}.
+\note{What is $w$ here?}
 A representation of disturbances acting on the linearised
 model due to linearisation errors can be obtained using the
 Mean Value Theorem for vector-valued functions (e.g.~\cite{Apostol:1974}).
@@ -463,7 +468,8 @@ $x + th \in\mathcal X$ for all $t\in [0 ,1]$. Then
 %
 %
 Using the Mean Value Theorem
-and the linearisation around $(\hat{x},\hat{u})$, we obtain the successor state:
+and the linearisation around $(\hat{x},\hat{u})$, and defining 
+$\tilde{x} = x - \hat{x}$, $\tilde{u} = u - \hat{u}$ we obtain the successor state:
 %
 \begin{align*}
 x^+ &= \tilde{f}(\hat{x} + \tilde{x},\hat{u} + \tilde{u}) 
@@ -472,34 +478,38 @@ x^+ &= \tilde{f}(\hat{x} + \tilde{x},\hat{u} + \tilde{u})
 + \int_0^1\frac{\partial\tilde f}{\partial x}(\hat x + t\tilde x,
 \hat u + t\tilde u) dt \cdot \tilde x  \\
 &\quad + \int_0^1\frac{\partial\tilde f}{\partial u}(\hat x + t\tilde x,\hat u+
-t\tilde u) dt\cdot \tilde u \\
+t\tilde{u}) dt\cdot \tilde{u} \\
 \Leftrightarrow 
 \tilde x^+ &= A\tilde{x} + B \tilde{u} +\Bigl(
 \int_0^1\frac{\partial\tilde f}{\partial x}(\hat x + t\tilde x,\hat u
-             + t\tilde u)dt - A \Bigr)\tilde x 
+             + t\tilde{u})dt - A \Bigr)\tilde x 
 \\ 
-&\quad +\Bigl(\int_0^1\frac{\partial\tilde f}{\partial u}(\hat x + t\tilde x,\hat u + t\tilde u)dt - B\Bigr)\tilde u
+&\quad +\Bigl(\int_0^1\frac{\partial\tilde f}{\partial u}(\hat x +
+  t\tilde x,\hat u + t\tilde{u})dt - B\Bigr)\tilde{u}
 \end{align*}
 %
 This implies the dynamics
 %
 \[
-\tilde x^+ = A\tilde x+B\tilde u + H^x\tilde x + H^u \tilde u, 
+\tilde x^+ = A\tilde x+B\tilde{u} + H^x\tilde{x} + H^u \tilde{u}, 
 \]
 %
 where $H^x$ and $H^u$ can be determined by integration. 
-Suppose that for all $x\in\mathcal X$ and $u\in\mathcal U$, where $\mathcal X$ and $\mathcal U$ are compact sets,
-we can bound the values of $H^x x+ H^u u$ by a finite convex combination of extremal values, i.e. 
-$H^x x+H^u u\in\conv_k\{H^x_k x + H^u_k u\}$.
+Suppose that for all $x\in\mathcal X$ and $u\in\mathcal U$, where
+$\mathcal X$ and $\mathcal U$ are compact sets, $f(x,u)$ is
+continuously differentiable. Then
+we can bound the values of $H^x \tilde{x}+ H^u \tilde{u}$ by a finite convex combination of extremal values, i.e. 
+$H^x \tilde{x}+H^u \tilde{u}\in\conv_k\{H^x_k \tilde{x} + H^u_k \tilde{u}\}$.
 \note{I did't like this passage. It made it seem obvious that the nonlinearities are contained in a polytope spanned by
-extremal values.. That's obviously not the case..}
+extremal values.. That's obviously not the case.. [We can assume this
+if $f$ is continuously differentiable]}
 Clearly, we can then introduce the element\-wise disturbance bound 
 %
 \begin{multline}\label{eq:definition:element:wise:constraints:on:nonlinearities}
-\mathcal V(x,u)=\biggl\{v:\min_k\{
-H^x_{k,i}x+H^u_{k,i}u\}\leq v_i\,\wedge 
+\mathcal V(\tilde{x},\tilde{u})=\biggl\{v:\min_k\{
+H^x_{k,i}\tilde{x}+H^u_{k,i}\tilde{u}\}\leq v_i\,\wedge 
 \\ 
-v_i \leq \max_k\{H^x_{k,i}x+H^u_{k,i}u\}, \, i =1,\dots,n\biggr\}.
+v_i \leq \max_k\{H^x_{k,i}\tilde{x}+H^u_{k,i}\tilde{u}\}, \, i =1,\dots,n\biggr\}.
 \end{multline}
 %
 With this set we can
@@ -509,9 +519,10 @@ finding the extremal values of $(H^x,H^u)$ cannot be done easily.
 To obtain values for $(H^x_k,H^u_k)$ we sample $\mathcal X\times\mathcal U$ and evaluate the integral 
 expressions defining $(H^x_k,H^u_k)$ pointwise. For this we use the numerical values for the example of the 
 levitating ball: $Ts=30ms, C=1, m=100g, \hat x_1 = 50mm$ and $\mathcal X=\{x:
-\abs{\hat x_1-x_1}\leq 1mm\wedge \abs{x_2}\leq 105\frac{mm}{s}\}$, $\mathcal U=\{u:\abs{\hat u-u}\leq10mA\}$.
+\abs{x_1- \hat x_1}\leq 1mm\wedge \abs{x_2}\leq 105\frac{mm}{s}\}$, $\mathcal U=\{u:\abs{ u-\hat u}\leq10mA\}$.
 Using a total of 25 samples for the computation of $(H^x,H^u)$ we obtain the invariant set shown in figure~\ref{fig:MRPI:set:levitating:ball},
-which is less conservative than using fixed bounds on the nonlinearities as we will see in the next example.
+which is less conservative than using fixed bounds on the
+nonlinearities as we will see in Section~\ref{sec:second:example}.
 The algorithm for computing the MRPI set terminates after 3 iterations.
 %
 %
@@ -802,7 +813,8 @@ For this example the greatest sensitivity corresponds to $\alpha_3$ with a numer
 i.e. the third input constraint.
 \note{I actually have no idea what the numerical value means. It sort of tells us that at least one constraint depending on $\alpha_3$
 is highly sensitive. The actual numerical value could also imply that it is a constraint on $\alpha_3$ which has some residual dependence on
-$\alpha_3$ and is blown up by normalising.}
+$\alpha_3$ and is blown up by normalising. [some comment is needed in
+the text]}
 Similarly to the first example we might also want to know how much disturbance the closed loop system can tolerate 
 such that a given set is contained in the MRPI set $\mathcal C\subseteq\mathcal Z^\infty\vert_{(\theta,0)}$.
 Although non-positivity of $\mathcal H$ implies non-positivity of $\Lambda^\alpha$, a similar argument cannot be applied to $\Lambda^\theta$.
