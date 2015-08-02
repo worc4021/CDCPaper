@@ -299,7 +299,7 @@ The next iterate is defined by
 and at the $(k+1)$st iteration we have
 %
 \[
-	\mathcal X_{k+1} = \mathcal X_k\cap \{x:\genmat_{0,i}\Psi^k x + \sum_{l=0}^{k-1}v_{l,i}^\ast(x)
+	\mathcal X_{k+1} = \mathcal X_k\cap \{x:\genmat_{0,i}\Psi^k x + \sum_{l=1}^{k-1}v_{l,i}^\ast(x)
 	\leq\genvec_{0,i}\,\forall i\in\mathcal I_0\},
 \]
 %
@@ -319,7 +319,7 @@ In closed form the iterates can be expressed as
 \begin{split}
 	\mathcal X_{k+1} =& \mathcal X_k\cap\left(\Psi^{-1}\mathcal X_k \ominus \Psi^{k-1}\mathcal V(\mathcal X_k)\right)
 	=\mathcal X_k\cap D_k \\
-	=& \bigcap_{0\leq l\leq k+1}\left( \Psi^{-l} \mathcal X_0 \underset{0 \leq i\leq l-1}{\bigominus} 
+	=& \bigcap_{0\leq l\leq k+1}\left( \Psi^{-l} \mathcal X_0 \underset{1 \leq i\leq l-1}{\bigominus} 
   \Psi^i \mathcal V(\mathcal X_{l-1})\right).
 \end{split}\end{equation}
 %
@@ -340,11 +340,11 @@ X_{N+1}$ for a finite $N$, and hence the MRPI set $\mathcal X^\infty =\mathcal X
 From~\eqref{eq:set:iteration:state:dependent:constraints} it is clear that $\mathcal X^\infty = \emptyset$ 
 if $\mathcal X_k =\emptyset$ for any $k\geq 0$. For the remainder of the proof we assume that the MRPI set 
 $\mathcal X^\infty$ is non-empty. For this we require that $\bigcup_{s\in\mathcal S}\mathcal V(s)$ is 
-compact on any compact set $\mathcal S\subset\mathbb R^n$.
+bounded on any bounded set $\mathcal S\subset\mathbb R^n$.
 
-The proof has two main steps: First we prove that $\mathcal X_p$ is compact for $p\leq n$
+The proof has two main steps: First we prove that $\mathcal X_p$ is bounded for $p\leq n$
 where $n$ is the dimension of the state $x$. The second step is to prove that in~\eqref{eq:set:iteration:state:dependent:constraints}
-the set $D_k$ grows exponentially, i.e. that for any given compact set $\mathcal C$ there exists
+the set $D_k$ grows exponentially, i.e. that for any given bounded set $\mathcal C$ there exists
 finite $N$ such that $\mathcal C\subseteq D_{N}$. The proof is concluded by setting 
 $\mathcal C = \mathcal X_{N}$ and deducing that $\mathcal X^\infty = \mathcal X_N$. 
 
@@ -359,26 +359,26 @@ But  this implies that the set
 \]
 %
 is bounded, and since $\mathcal X_k\subseteq \mathcal P_k$ for all $k$, 
-the set $\mathcal X_{n}$ is also bounded. To show that $D_k$ grows exponentially we use the compactness 
+the set $\mathcal X_{n}$ is also bounded. To show that $D_k$ grows exponentially we use the boundedness 
 of $\mathcal V(\mathcal X_{n})$. Let $K_1$ denote the smallest ball that contains $\mathcal V(\mathcal X_{n})$ and let
 $\rho$ denote the spectral radius of $\Psi$. Furthermore, let $K_2$
 be the biggest ball that is contained in $\mathcal X_{0}$. From~\eqref{eq:set:iteration:state:dependent:constraints}, 
 $D_k$ has the representation
 %
 \begin{equation}
-D_k = \underbrace{\Psi^{-k}\mathcal X_0}_{=\mathcal S_1} \ominus \underbrace{\biggl(\bigoplus_{i\leq k-1} 
+D_k = \underbrace{\Psi^{-k}\mathcal X_0}_{=\mathcal S_1} \ominus \underbrace{\biggl(\bigoplus_{1\leq i\leq k-1} 
 \Psi^i\mathcal V(\mathcal X_k)\biggr)}_{=\mathcal S_2}.
 \end{equation}
 %
 Since $\Psi$ is asymptotically stable we have $\rho<1$ and therefore $\rho^{-l}K_1\subseteq\Psi^{-l} K_1 
 \subseteq \Psi^{-l}\mathcal X_0 = \mathcal S_1$, implying exponential growth of $D_k$ provided $\mathcal S_2$ 
 is bounded. To bound $\mathcal S_2$ we note that for $k\geq n$ we have $\mathcal S_2\subseteq 
-\bigoplus_{0\leq i\leq k-1} \rho^i K_2 \subseteq \frac{1}{1-\rho} K_2$. Thus $D_k$ grows exponentially, whereas 
+\bigoplus_{1\leq i\leq k-1} \rho^i K_2 \subseteq \frac{1}{1-\rho} K_2$. Thus $D_k$ grows exponentially, whereas 
 $\mathcal X_k$ is contained in a ball of finite radius, and hence we conclude from~\eqref{eq:set:iteration:state:dependent:constraints} that 
 $\mathcal X_{k+1} = \mathcal X _k$ for all $k\geq N$ and therefore $\mathcal X _N = \mathcal X^\infty$ for finite $N$.
 \end{proof}
 %
-We have seen that we can compute a the maximal robust positively invariant set $\mathcal X^\infty$ for linear 
+We have seen that we can compute the maximal robust positively invariant set $\mathcal X^\infty$ for linear 
 systems with state dependent constraints. In the next section we will illustrate the concept with an 
 example.
 %
@@ -408,7 +408,7 @@ example.
 %
 %
 %
-In this section we discuss the calculation of the MRPI set for a linearised simplified model of the magnetic 
+In this section we discuss the calculation of the MRPI set for a linearised and simplified model of the magnetic 
 levitation system depict in figure~\ref{fig:levitating:ball}. The system dynamics for the ball are given
 by $m \ddot y = m g - c\frac{i^2}{y^2}$, where $m,g,c,i$ and $y$ denote the mass of the ball, the gravitational
 constant, a constant factor, the current and the distance between the coil and the centre of the ball respectively.
@@ -511,7 +511,7 @@ expressions defining $(H^x_k,H^u_k)$ pointwise.
 This leads to an inner approximation of the linearisation error set, however we can make it as tight as necessary
 by increasing the number of samples.
 For this we use the numerical values for the example of the 
-levitating ball: $Ts=30ms, C=1, m=100g, \hat x_1 = 50mm$ and $\mathcal X=\{x:
+levitating ball: $T_s=30ms, C=1, m=100g, \hat x_1 = 50mm$ and $\mathcal X=\{x:
 \abs{x_1- \hat x_1}\leq 1mm\wedge \abs{x_2}\leq 105\frac{mm}{s}\}$, $\mathcal U=\{u:\abs{ u-\hat u}\leq10mA\}$.
 Using a total of 25 samples for the computation of $(H^x,H^u)$ we obtain the invariant set shown in figure~\ref{fig:MRPI:set:levitating:ball},
 which is less conservative than using fixed bounds on the
