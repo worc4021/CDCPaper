@@ -391,7 +391,7 @@ example.
 \centering
 \begin{overpic}[scale=0.75]{levitatingBall}
 \put(30,5){$m g$}
-\put(30,41){$c\frac{i^2}{x^2}$}
+\put(30,41){$c\frac{i^2}{y^2}$}
 \put(78,28){$y$}
 \put(90,89){$i$}
 \end{overpic}
@@ -511,7 +511,7 @@ expressions defining $(H^x_k,H^u_k)$ pointwise.
 This leads to an inner approximation of the linearisation error set, however we can make it as tight as necessary
 by increasing the number of samples.
 For this we use the numerical values for the example of the 
-levitating ball: $Ts=30ms, C=1, m=100g, \hat x_1 = 50mm$ and $\mathcal X=\{x:
+levitating ball: $T_s=30ms, C=1, m=100g, \hat x_1 = 50mm$ and $\mathcal X=\{x:
 \abs{x_1- \hat x_1}\leq 1mm\wedge \abs{x_2}\leq 105\frac{mm}{s}\}$, $\mathcal U=\{u:\abs{ u-\hat u}\leq10mA\}$.
 Using a total of 25 samples for the computation of $(H^x,H^u)$ we obtain the invariant set shown in figure~\ref{fig:MRPI:set:levitating:ball},
 which is less conservative than using fixed bounds on the
