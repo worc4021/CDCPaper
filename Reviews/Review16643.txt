@@ -1,0 +1,27 @@
+Reviewer 2 of CDC15 submission 656
+
+Comments to the author
+======================
+
+The authors presented methods to computing the maximal
+robust positively invariant sets for linear discrete-time
+systems with additive model uncertainty. The simulation
+results demonstrate the effectiveness of the proposed
+methods.
+
+In my opinion this paper is well organized and written, and
+the results obtained in this paper sounds theoretically
+correct. So I think this paper could be accepted. The
+following concerns may need to be considered.
+
+1. It will be preferable is the authors provide more
+details to express the relation
+$\Psi^{-l}K_1\subseteq\Psi^{-l}X_0$ which is stated in the
+proof of Lemma 3.1.
+
+There may be some typos in the following sentences.
+
+2. page 3, "...we can compute a the maximal robust..."
+
+3. page 3, "...a linearised simplified model of the
+magnetic levitation system depict in figure 1."

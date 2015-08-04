@@ -1,0 +1,31 @@
+Reviewer 4 of CDC15 submission 656
+
+Comments to the author
+======================
+
+The paper deals with the problem of computing the maximal
+robust positive invariant set for discrete-time linear
+systems affected by additive uncertainty. The uncertainty
+is supposed to be unknown but bounded and the bound is a
+state-dependent polytope. Further assumption is assumed,
+namely that the bounds on the uncertainty are characterized
+by piecewise affine convex support functions. Also the case
+of uncertainty that is parametric dependent is considered.
+Thus, methods for computing the MRPI, which is
+substantially the adaptation of the classical iterative
+procedure related to linear systems with polytopic
+uncertainty. 
+
+The paper seems relatively interesting to me, as the
+problem is not widely analyzed yet (the authors may want to
+have a look, nevertheless, to the concept of convex
+difference inclusions, see Fiacchini Alamo Camacho,
+"Invariant sets computation for convex difference
+inclusions systems" SCL12). My main concern regards the
+computational aspects. Indeed, concerning the piecewise
+dependent vertices v(x), I'd say that such functions are
+not, in general, easy to obtain. Roughly speaking, for
+generic piecewise affine convex functions H(x), the value
+of the vertices might be not trivial to be obtained as
+functions of the state. I suggest the authors to give more
+details on this aspect.
