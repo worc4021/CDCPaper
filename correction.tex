@@ -1,0 +1,78 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\define\vv{\vskip\baselineskip}
+
+\begin{document}
+
+The error in the paper comes from a mistake in Lemma 2.4. (There is a typo in Lemma~2.3: $Z$ should be $S$ in the second-last line, but otherwise Lemma 2.3 is OK.)
+
+\vskip\baselineskip
+The mistake in the proof of Lemma 2.4 is in the line
+\[%\begin{align*}
+\{v : G v \leq \lambda H(x_1) + (1-\lambda)H(x_2)\} 
+= \{v : Gv \leq \lambda H(x_1)\} \oplus \{v : Gv <= (1-\lambda)H(x_2)\}.
+\]%\end{align*}
+I think equality only holds here if $\{v : Gv \leq H(x_i)\}$ is irredundant for $i = 1$ and $i = 2$; in the general case the LHS will contain (but not be equal to) the RHS. To correct this we need to assume that $\{v : Gv \leq H(x)\}$ is an irredundant representation (i.e.\ one that contains no redundant constraints) for all $x$ in $\mathcal{X}$. Although this sounds not too bad, it's actually quite a restrictive assumption because it rules out the possibility (as we discussed this morning) of the number of vertices of $V(x)$ changing.
+
+\vskip\baselineskip
+To see why we need $V(x)$ to be irredundant in order that Lemma~2.4 can hold consider the following 1-dimensional example. For scalar $v$ and $x$, let $\mathcal{X} = [0,2]$ and
+\begin{gather*}
+V(x) =  \{v : Gv \leq H(x)\}, \\
+G = \begin{bmatrix} 1 \\ 1 \\ -1\end{bmatrix}, \ \ H(x) = \begin{bmatrix} 1\\  (x+1)/2 \\ 1 \end{bmatrix}.
+\end{gather*}
+Then 
+\[
+V(x) = \begin{cases}
+\{ v : -1 \leq v \leq (x+1)/2\} & x \in [0,1] \\
+\{ v : -1 \leq v \leq 1\} & x \in [1,2] 
+\end{cases}
+\]
+so the upper limit of $V(x)$ is clearly a concave (rather than convex) function of $x$ even though $H(x)$ is linear and hence is necessarily elementwise convex.
+
+\vskip\baselineskip
+In particular, taking $x_1 = 2$ and $x_2 = 0$ we get
+\begin{align*}
+V\bigl( \lambda x_1 + (1-\lambda) x_2 \bigr) 
+&= \left\{ v: \begin{bmatrix} 1 \\ 1 \\ -1 \end{bmatrix} v \leq \lambda \begin{bmatrix} 1 \\ 1.5 \\ 1 \end{bmatrix} + (1-\lambda)  \begin{bmatrix} 1 \\ 0.5 \\ 1 \end{bmatrix} \right\}  
+\\
+& \supseteq 
+\left\{ v_1 + v_2 : \begin{bmatrix} 1 \\ 1 \\ -1 \end{bmatrix} v_1 \leq \lambda \begin{bmatrix} 1 \\ 1.5 \\ 1 \end{bmatrix} , \ 
+\begin{bmatrix} 1 \\ 1 \\ -1 \end{bmatrix} v_2 \leq  (1-\lambda)\begin{bmatrix} 1 \\ 0.5 \\ 1 \end{bmatrix} \right\} \\
+&= \lambda V(x_1) \oplus (1-\lambda) V(x_2),
+\end{align*}
+where $\supseteq$ appears in the 2nd line because the RHS is equal to 
+\[
+\left\{v_1 + v_2 :  \begin{bmatrix} 1 \\ -1 \end{bmatrix} v_1 \leq \lambda \begin{bmatrix} 1 \\ 1 \end{bmatrix} , \ 
+\begin{bmatrix} 1 \\ -1 \end{bmatrix} v_2 \leq (1-\lambda) \begin{bmatrix} 0.5 \\ 1 \end{bmatrix}\right\}
+= 
+\{ v :  -1 \leq v \leq 0.5 + 0.5\lambda\} .
+\]
+In general equality will only hold in this step if and only if the same linear inequalities are active in the conditions on $v_1$ and $v_2$, and this will be the case if and only $Gv \leq H(x_i)$ is irredundant for  $i=1$ and $i=2$.
+
+
+
+\end{document}  
+
+
+\begin{align*}
+\left\{ v: \begin{bmatrix} 1 \\ -1 \end{bmatrix} v \leq \begin{bmatrix} 0.5 \\ 1 \end{bmatrix}\right\} \oplus \{0 \} \\ 
+%\begin{bmatrix} 1 \\ -1 \end{bmatrix} \leq  \begin{bmatrix} 0 \\ 0 \end{bmatrix} \right\} \\
+& = \{v : -1 \leq v \leq 0.5 \} \neq V(\lambda x_1) \oplus V\bigl( (1-\lambda) x_2 \bigr)
+\end{align*}
+However if we use an irredundant representation (piecewise in $x$ or $\lambda$) we get an 
+\[
+V(2\lambda) = 
+\begin{cases} 
+\left\{v : \begin{bmatrix} 1 \\ -1 \end{bmatrix} v \leq \begin{bmatrix} 0.5+\lambda \\ 1 \end{bmatrix}\right\} 
+& \text{for } 0 \leq \lambda \leq 0.5 \\
+\left\{v : \begin{bmatrix} 1 \\ -1 \end{bmatrix} v \leq \begin{bmatrix} 1 \\ 1 \end{bmatrix}\right\} 
+& \text{for } 0.5 \leq \lambda \leq 1
+\end{cases} 
+\]
