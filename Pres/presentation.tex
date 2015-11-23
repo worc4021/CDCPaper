@@ -1,0 +1,176 @@
+\documentclass{beamer}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{hyperref, amsthm}
+\usepackage{amsmath,amssymb}
+\usepackage{mathrsfs}
+\usepackage{xcolor,ifthen,animate,verbatim}
+\usepackage{lpic}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning}
+
+\tikzset{
+    at xy split/.style 2 args={
+        at={(#1,#2)}
+    },
+    a/.style={circle, draw=red},`'
+    b/.style={rectangle, draw=blue}
+}
+
+\graphicspath{{../Pix/}}
+
+\usecolortheme{sidebartab}
+\usefonttheme{serif}
+
+
+\mode<presentation>
+\title{Robust positively invariant sets for state dependent and scaled disturbances}
+\subtitle{54th IEEE Conference on Decision and Control, Osaka}
+\author{Rainer M. Schaich \and Mark Cannon}
+\date{18.~December 2015} 
+
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+
+
+
+\definecolor{mygray}{cmyk}{75,64,0,0}
+\definecolor{darkblue}{rgb}{0,200,117}
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamercolor{structure}{fg=mygray}
+\setbeamercolor{block title}{use=structure, fg=structure.fg, bg=structure.fg!20!bg}
+\setbeamercolor{block body}{parent=normal text, use=block title, bg=block title.bg!50!bg}
+
+\setbeamertemplate{footline}
+{%
+  \leavevmode%
+  \hbox{%
+  % \begin{beamercolorbox}[wd=.2\paperwidth,ht=2.25ex,dp=1ex,left]{author in head/foot}%
+  %   \usebeamerfont{author in head/foot}\hskip3pt\insertdate
+  % \end{beamercolorbox}%
+  % \begin{beamercolorbox}[wd=.6\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+  %   \usebeamerfont{title in head/foot}\inserttitle
+  % \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+	\hspace*{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\setbeamertemplate{navigation symbols}{}
+
+\AtBeginSection[]
+{
+	\begin{frame}
+		\frametitle{Outline}
+		\tableofcontents[currentsection]
+		% \nopage
+	\end{frame}
+}
+
+
+\begin{document}
+	{
+	\usebackgroundtemplate{%
+	  \vbox to \paperheight{\vfil\vspace{5cm}\hbox to .5\paperwidth{\hfil%
+	  \includegraphics[scale=.7]{../../../ox_logo_cmyk_blue_pos2}%
+	  \hspace{1cm}\hfil}\vfil}%
+	  \vbox to \paperheight{\vfill\vspace{5cm}\hbox to \paperwidth{\hspace{.1\paperwidth}
+	  %
+	  \hfill}\vfill}
+	}
+		\begin{frame}
+			\titlepage
+		\end{frame}
+	}
+
+
+\begin{frame}
+\frametitle{Motivation}
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\tableofcontents
+\end{frame}
+
+\section{The Maximal Robust Positive Invariant Set}
+\begin{frame}
+\frametitle{The Maximal Robust Positive Invariant Set}
+For a constrained linear system
+\[
+x^+ = \Phi x + v,
+\]
+with $x,x^+\in\mathcal X_0$ and $v\in\mathscr V$\only<2>{\textcolor{red}{$(x)$}} the \emph{maximal robust positive invariant} 
+(MRPI) \emph{set} is defined as the largest set for which
+\only<1>{
+\[
+\mathscr X^\infty = \left\{x\in\mathcal X_0 : \Phi x + v \in \mathscr X^\infty\;\forall v\in\mathscr V\right\}
+\]}
+\only<2>{
+\[
+\mathscr X^\infty = \left\{x\in\mathcal X_0 : \Phi x + v \in \mathscr X^\infty\;\forall v\in\mathscr V{\color{red}{(x)}}\right\}
+\]}
+holds.
+\end{frame}
+
+\section{Parametrically Convex Sets}
+\begin{frame}
+\frametitle{Parametrically Convex Sets}
+\begin{block}{Definition: Parametric Convexity}
+A continuous set-valued map $T: X\rightarrow\mathcal P(Y)$, $X\ni x\mapsto T(x)\subseteq Y$ is called \emph{parametrically convex}, if for all $x_1,x_2\in X$and all $0\leq\lambda\leq1$ $T(\lambda x_1 + (1-\lambda)x_2)\subseteq \lambda T(x_1) \oplus (1-\lambda)T(x_2)$ holds.
+\end{block}
+
+
+\uncover<2>{
+\begin{figure}
+\centering
+\begin{lpic}{../Pix/pConvexSet}
+\lbl[tl]{54,12;$x$}
+\lbl[bl]{25,25;$T(x)$}
+\end{lpic}
+\caption{Scalar parametrically convex set}
+\end{figure}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Parametric Pontryagin Difference}
+\begin{block}{Definition: Pontryagin Difference}
+For a set $S\subseteq X$ and a parametrically convex set-valued map $T:X\rightarrow \mathcal P(X)$
+the \emph{parametric Pontryagin difference} $S\ominus T(S)$ is given by the 
+$$
+S\ominus T(S) = \bigl\{x\in X : \{x\}\oplus T(x)\subseteq S \bigr\}
+$$
+\end{block}
+
+\begin{block}<2->{Lemma}
+The parametric Pontryagin difference $S\ominus T(S)$ is convex \emph{iff} $T$ is parametrically convex.
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Parametric Pontryagin Difference}
+
+% \begin{tikzpicture}[scale=0.6,domain=-3:5]
+
+% % \begin{scope}
+% % \path [clip] (-3,-5)--(5,3)--(-3,3)--cycle;
+% % \path[fill=black,opacity=0.2] (2,0) -- plot[domain=2:0] (0,0) circle (2cm) -- (0,-2) -- cycle;
+% % \end{scope}
+
+% %draw grid+axis afterwards
+% \draw[very thin, color=gray,opacity=0.2] (-5.0,-5.0) grid (5.0,5.0);
+
+
+% %draw cirle + graph
+% \draw[color=black] plot[domain=-5:5,samples=100] function {sqrt(x+5)}
+% \draw (0,0) circle (2cm);
+
+% \end{tikzpicture}
+
+\end{frame}
+\end{document}
