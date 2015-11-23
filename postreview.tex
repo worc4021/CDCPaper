@@ -103,7 +103,7 @@ However for the case of disturbances belonging to a fixed set $\mathscr V$, meth
 $\mathcal X^\infty$ are now well established~\cite{blanchini:2007}.
 
 This paper considers sets of disturbances that depend on
-parameters. First we consider state-dependent sets,
+parameters. First we consider state-dependent sets with the irredundant representation
 \begin{equation}\label{eq:PWA:disturbance:set}
 	\mathcal V(x) = \left\{v: Gv\leq H(x)\right\},
 \end{equation}
@@ -203,7 +203,7 @@ all possible $z_1$ and $z_2$ are subsets of $ Z$, i.e.~for all $\lambda \in [0,1
   T(z_2)\\
   \subseteq &\lambda\underbrace{(\{z_1\}\oplus T(z_1))}_{\subseteq S}\oplus
   (1-\lambda)\underbrace{(\{z_2\}\oplus T(z_2))}_{\subseteq S}
-  \subseteq Z
+  \subseteq S
 \end{aligned}\]
 %
 where the last inclusion follows from the convexity of $\mathcal S$.
@@ -213,9 +213,9 @@ where the last inclusion follows from the convexity of $\mathcal S$.
 Now consider a parametrically convex set of the form of~\eqref{eq:PWA:disturbance:set}.
 \begin{thm}\label{thm:convex:parametric:set}
   The point-to-set map $\mathcal V (x)$ defined by~\eqref{eq:PWA:disturbance:set} is parametrically 
-  convex for all $x\in \mathcal X$ if $H(x)$ is elementwise convex in $x\in \mathcal X\subset 
-  \mathbb R^n$ (i.e.~if each element $H_i(x)$ of $H(x)$ satisfies $H_i(\lambda x_1+(1-\lambda)x_2)\leq 
-  \lambda H_i(x_1)+(1-\lambda)H_i(x_2)$ for all    $\lambda\in[0,1]$ and $x_1, x_2\in\mathcal X$).
+  convex for all $x\in \mathcal X$ if $H(x)$ is elementwise convex (i.e.~if each element $H_i(x)$ of $H(x)$ satisfies $H_i(\lambda x_1+(1-\lambda)x_2)\leq 
+  \lambda H_i(x_1)+(1-\lambda)H_i(x_2)$ for all    $\lambda\in[0,1]$ and $x_1, x_2\in\mathcal X$) and
+  irredundant for all $x\in \mathcal X$.
 \end{thm}
 %
 \begin{proof}
