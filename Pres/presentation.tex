@@ -8,7 +8,7 @@
 \usepackage{lpic}
 
 \usepackage{tikz}
-\usetikzlibrary{arrows,positioning}
+\usetikzlibrary{arrows,positioning,patterns}
 
 \tikzset{
     at xy split/.style 2 args={
@@ -43,6 +43,8 @@
 \setbeamercolor{structure}{fg=mygray}
 \setbeamercolor{block title}{use=structure, fg=structure.fg, bg=structure.fg!20!bg}
 \setbeamercolor{block body}{parent=normal text, use=block title, bg=block title.bg!50!bg}
+\setbeamercolor{plots}{fg=black,bg=red}
+
 
 \setbeamertemplate{footline}
 {%
@@ -136,7 +138,7 @@ A continuous set-valued map $T: X\rightarrow\mathcal P(Y)$, $X\ni x\mapsto T(x)\
 \caption{Scalar parametrically convex set}
 \end{figure}}
 \end{frame}
-
+ 
 \begin{frame}
 \frametitle{Parametric Pontryagin Difference}
 \begin{block}{Definition: Pontryagin Difference}
@@ -155,22 +157,32 @@ The parametric Pontryagin difference $S\ominus T(S)$ is convex \emph{iff} $T$ is
 \begin{frame}
 \frametitle{Parametric Pontryagin Difference}
 
-% \begin{tikzpicture}[scale=0.6,domain=-3:5]
-
-% % \begin{scope}
-% % \path [clip] (-3,-5)--(5,3)--(-3,3)--cycle;
-% % \path[fill=black,opacity=0.2] (2,0) -- plot[domain=2:0] (0,0) circle (2cm) -- (0,-2) -- cycle;
-% % \end{scope}
-
-% %draw grid+axis afterwards
-% \draw[very thin, color=gray,opacity=0.2] (-5.0,-5.0) grid (5.0,5.0);
-
-
-% %draw cirle + graph
-% \draw[color=black] plot[domain=-5:5,samples=100] function {sqrt(x+5)}
-% \draw (0,0) circle (2cm);
-
-% \end{tikzpicture}
+\begin{center}
+\begin{tikzpicture}[scale=1.5]
+	\usebeamercolor{plots}
+	\draw[ultra thick, fg] (-2,2) -- (2,2) -- (2,-2) -- (-2,-2) -- cycle;
+	\only<1-2>{
+	\draw[-latex'] (-3,1.5) to[out=0,in=180] (-2,1.1);
+	\draw (-3,1.5) node[left] {{$S$}};}
+	\only<2->{
+	\draw[fg] plot[domain=-2:2] (\x, {1.8 -.1*pow(\x,2))});}
+	\only<2>{
+	\draw[-latex'] (0,.2) to[out=45,in=-160] (1.2,1.656);
+	\draw (0,0) node[bottom,rotate=0] {{$\{x: \exists t\in T(x)\; t + x\in \partial S\}$}};
+	\draw (.6,1.656) -- (1.2,2) -- (1.8,1.656) -- (1.2,1.312) -- cycle;
+	}
+	\only<3->{
+	\draw[fg] plot[domain=-1.79999:-1.4] (\x, {sqrt(18+10*\x)});
+	\draw[fg] plot[domain=-1.79999:-1.4] (\x, {-sqrt(18+10*\x)});
+	\draw[fg] plot[domain=-2:2] (\x, {-1.8 + .1*pow(\x,2)});
+	\draw[fg] plot[domain=1.4:1.8] (\x, {sqrt(18-10*\x)});
+	\draw[fg] plot[domain=1.4:1.8] (\x, {-sqrt(18-10*\x)});
+	}
+	\only<4>{
+	\fill[pattern = north east lines, opacity=0.8] (-1.55744,1.55744) -- plot[domain=-1.55744:1.55744] (\x,{1.8 -.1*pow(\x,2))}) -- (1.55744,1.55744) -- plot[domain=1.55744:1.79999] (\x, {sqrt(18-10*\x)}) -- (1.8,0) -- plot[domain=1.79999:1.55744] (\x, {-sqrt(18-10*\x)}) -- (1.55744,-1.55744) -- plot[domain=1.55744:-1.55744] (\x, {-1.8 + .1*pow(\x,2)}) -- (-1.55744,-1.55744) -- plot[domain=-1.55744:-1.79999] (\x, {-sqrt(18+10*\x)}) -- (-1.8,0) --plot[domain=-1.79999:-1.55744] (\x, {sqrt(18+10*\x)}) -- (-1.55744,1.55744) -- cycle;
+	}
+\end{tikzpicture}
+\end{center}
 
 \end{frame}
 \end{document}
