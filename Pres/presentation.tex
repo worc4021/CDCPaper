@@ -43,7 +43,7 @@
 \setbeamercolor{structure}{fg=mygray}
 \setbeamercolor{block title}{use=structure, fg=structure.fg, bg=structure.fg!20!bg}
 \setbeamercolor{block body}{parent=normal text, use=block title, bg=block title.bg!50!bg}
-\setbeamercolor{plots}{fg=black,bg=red}
+\setbeamercolor{plots}{fg=black,bg=white}
 
 
 \setbeamertemplate{footline}
@@ -162,14 +162,22 @@ The parametric Pontryagin difference $S\ominus T(S)$ is convex \emph{iff} $T$ is
 	\usebeamercolor{plots}
 	\draw[ultra thick, fg] (-2,2) -- (2,2) -- (2,-2) -- (-2,-2) -- cycle;
 	\only<1-2>{
-	\draw[-latex'] (-3,1.5) to[out=0,in=180] (-2,1.1);
-	\draw (-3,1.5) node[left] {{$S$}};}
+	\draw[-latex'] (-3,.5) to[out=0,in=180] (-2,0);
+	\draw (-3,.5) node[left] {{$S$}};}
+	\only<3->{
+	\draw[bg,-latex'] (-3,.5) to[out=0,in=180] (-2,0);
+	\draw (-3,.5) node[left] {{$\hphantom{S}$}};}
 	\only<2->{
 	\draw[fg] plot[domain=-2:2] (\x, {1.8 -.1*pow(\x,2))});}
 	\only<2>{
-	\draw[-latex'] (0,.2) to[out=45,in=-160] (1.2,1.656);
-	\draw (0,0) node[bottom,rotate=0] {{$\{x: \exists t\in T(x)\; t + x\in \partial S\}$}};
+	\draw[-latex'] (0,0) to[out=75,in=-75] (0,1.8);
+	\draw (0,0) node[below,rotate=0] {$\biggl\{x: \begin{array}{l}\{x\}\oplus T(x)\subseteq S \wedge \\ \not\exists \epsilon>0\; \{x\}\oplus \epsilon T(x) \subseteq S \end{array} \biggr\}$};
 	\draw (.6,1.656) -- (1.2,2) -- (1.8,1.656) -- (1.2,1.312) -- cycle;
+	\fill[pattern = north east lines, opacity=.5] (.6,1.656) -- (1.2,2) -- (1.8,1.656) -- (1.2,1.312) -- cycle;
+	\draw (-2,2) -- (-1.4,1.4) -- (-2,.8) -- (-2.6,1.4) -- cycle;
+	\fill[pattern = north east lines, opacity=.5] (-2,2) -- (-1.4,1.4) -- (-2,.8) -- (-2.6,1.4) -- cycle;
+	\draw[-latex'] (1.5,.7) to[out=120,in=-70] (1.3,1.5);
+	\draw (1.5,.7) node[below] {$T(x)$};
 	}
 	\only<3->{
 	\draw[fg] plot[domain=-1.79999:-1.4] (\x, {sqrt(18+10*\x)});
@@ -180,9 +188,18 @@ The parametric Pontryagin difference $S\ominus T(S)$ is convex \emph{iff} $T$ is
 	}
 	\only<4>{
 	\fill[pattern = north east lines, opacity=0.8] (-1.55744,1.55744) -- plot[domain=-1.55744:1.55744] (\x,{1.8 -.1*pow(\x,2))}) -- (1.55744,1.55744) -- plot[domain=1.55744:1.79999] (\x, {sqrt(18-10*\x)}) -- (1.8,0) -- plot[domain=1.79999:1.55744] (\x, {-sqrt(18-10*\x)}) -- (1.55744,-1.55744) -- plot[domain=1.55744:-1.55744] (\x, {-1.8 + .1*pow(\x,2)}) -- (-1.55744,-1.55744) -- plot[domain=-1.55744:-1.79999] (\x, {-sqrt(18+10*\x)}) -- (-1.8,0) --plot[domain=-1.79999:-1.55744] (\x, {sqrt(18+10*\x)}) -- (-1.55744,1.55744) -- cycle;
+	\draw[-latex'] (-2.1,.5) to[out=0,in=160] (-1.5,0);
+	\draw (-2.1,.5) node[left] {{$S\ominus T(S)$}};
 	}
 \end{tikzpicture}
 \end{center}
 
 \end{frame}
+
+\begin{frame}
+\frametitle{Piecewise affine setsk}
+
+
+\end{frame}
+
 \end{document}
